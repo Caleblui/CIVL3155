@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CIVL3155 Exam Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: hydraulics-lab drafting sheet. Sticky tab bar, one reading column, diagrams drawn like the lecturer's. */
+:root{
+  --bg:#EDF0F2; --surface:#FFFFFF; --ink:#13202A; --muted:#566571; --line:#CBD3DA; --soft:#E3E8EC;
+  --accent:#0B6E99; --accent-ink:#FFFFFF; --crit:#C42B2B; --ok:#23803A; --warn:#A86A00; --tint:#E2F0F7; --oktint:#E3F2E6; --crittint:#F9E3E3;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E151B; --surface:#16202A; --ink:#E4EBF0; --muted:#97A6B2; --line:#2B3A46; --soft:#1D2A35;
+  --accent:#4DB6E6; --accent-ink:#04131B; --crit:#FF6E6E; --ok:#5CCB76; --warn:#E3B04B; --tint:#122633; --oktint:#15291B; --crittint:#2E1818; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E151B; --surface:#16202A; --ink:#E4EBF0; --muted:#97A6B2; --line:#2B3A46; --soft:#1D2A35;
+  --accent:#4DB6E6; --accent-ink:#04131B; --crit:#FF6E6E; --ok:#5CCB76; --warn:#E3B04B; --tint:#122633; --oktint:#15291B; --crittint:#2E1818; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--surface);border-bottom:1px solid var(--line);
+  background-image:linear-gradient(var(--soft) 1px,transparent 1px),linear-gradient(90deg,var(--soft) 1px,transparent 1px);background-size:22px 22px}
+header.top .wrap{padding-block:28px 22px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.1;margin:0}
+h1{font-size:clamp(34px,7vw,52px);font-weight:700;letter-spacing:.01em}
+h2{font-size:30px;font-weight:700;margin-top:8px}
+h3{font-size:22px;font-weight:600;margin-top:4px}
+p{margin:0}
+.lede{max-width:62ch;color:var(--muted);margin-top:10px}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:0;scrollbar-width:none}
+nav.tabs button{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:.02em;background:none;border:0;color:var(--muted);
+  padding:12px 12px 10px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs button:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main .wrap{padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+section.view{display:flex;flex-direction:column;gap:28px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.marks{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.marks td,.marks th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.marks th{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.marks td.n{text-align:right;font-family:var(--mono);font-weight:600}
+.bar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.scroll{overflow-x:auto;max-width:100%}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--muted);vertical-align:middle}
+.pill.hot{background:var(--tint);color:var(--accent)}
+.pill.crit{background:var(--crittint);color:var(--crit)}
+.pill.ok{background:var(--oktint);color:var(--ok)}
+.day{display:flex;flex-direction:column;gap:10px}
+.day h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.day h3 small{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400}
+.task{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.task input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent)}
+.task .t{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600}
+.task b{display:block}
+.task .d{color:var(--muted);font-size:15px}
+.task.done b{text-decoration:line-through;color:var(--muted)}
+.progress{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:13px}
+.progress .bar{flex:1;height:10px}
+.note{border-left:3px solid var(--accent);background:var(--tint);padding:12px 14px;border-radius:0 6px 6px 0}
+.note.crit{border-color:var(--crit);background:var(--crittint)}
+.note.ok{border-color:var(--ok);background:var(--oktint)}
+.f{font-family:var(--mono);font-size:14.5px;background:var(--soft);padding:10px 12px;border-radius:4px;overflow-x:auto;white-space:pre;line-height:1.7}
+code{font-family:var(--mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:3px}
+ul,ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+details.mod{background:var(--surface);border:1px solid var(--line);border-radius:6px}
+details.mod>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:center;justify-content:space-between}
+details.mod>summary::-webkit-details-marker{display:none}
+details.mod>summary .ttl{display:flex;flex-direction:column;gap:2px;min-width:0}
+details.mod>summary .ttl span{color:var(--muted);font-size:14px}
+details.mod>summary::after{content:"+";font-family:var(--mono);font-size:22px;color:var(--accent)}
+details.mod[open]>summary::after{content:"−"}
+details.mod .body{padding:0 20px 22px;display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:18px}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;padding-left:34px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--surface);font-family:var(--mono);font-size:12px;display:grid;place-items:center}
+table.t{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14.5px;width:100%}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.t th{background:var(--soft);font-weight:600}
+table.t td.l,table.t th.l{text-align:left}
+table.t tr.cp td{color:var(--crit);font-weight:600}
+svg.net{width:100%;height:auto;display:block;min-width:560px}
+svg.net text{font-family:var(--mono);fill:var(--ink)}
+.netbox{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:8px}
+.cap{font-size:13px;color:var(--muted)}
+/* quiz */
+.qbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.qbar select,.qbar button,.btn{font-family:var(--body);font-size:15px;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.score{font-family:var(--mono);font-size:14px;margin-left:auto}
+.q{display:flex;flex-direction:column;gap:10px}
+.q .qh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.q .qn{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;font-family:var(--body);font-size:15.5px;line-height:1.45;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer;display:grid;grid-template-columns:24px 1fr;gap:8px}
+.opt:hover{border-color:var(--muted)}
+.opt .k{font-family:var(--mono);font-weight:600;color:var(--muted)}
+.opt.right{border-color:var(--ok);background:var(--oktint)}
+.opt.wrong{border-color:var(--crit);background:var(--crittint)}
+.opt[disabled]{cursor:default}
+.why{font-size:15px;padding:10px 12px;border-radius:6px;background:var(--soft)}
+.gen{display:flex;flex-direction:column;gap:10px}
+.gen .vals{font-family:var(--mono);font-size:15px;display:flex;flex-wrap:wrap;gap:8px 18px}
+.ans{font-family:var(--mono);font-size:14.5px;line-height:1.75;background:var(--soft);padding:10px 12px;border-radius:4px;overflow-x:auto;white-space:pre}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted)}
+footer{color:var(--muted);font-size:13px;text-align:center;padding-block:24px}
+@media (max-width:520px){ .card{padding:16px} details.mod .body{padding-left:16px;padding-right:16px} details.mod>summary{padding:14px 16px} h2{font-size:26px} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+<style>
+.netbox svg.net{min-width:520px}
+.ans{white-space:pre-wrap}
+.packcard .f{font-size:13px;line-height:1.6}
+sub{font-size:.75em}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--ink:#000;--muted:#333;--line:#999;--soft:#f0f0f0}
+  header.top,nav.tabs,footer,.noprint,section.view:not(#v-formulas){display:none!important}
+  #v-formulas{display:flex!important}
+  body{font-size:11px;background:#fff}
+  main .wrap{padding:0;gap:8px}
+  .packcard{break-inside:avoid;padding:8px 10px;border-color:#999}
+  .packcard .f{font-size:9.5px;line-height:1.45;white-space:pre-wrap;padding:6px}
+  .packcard h3{font-size:15px}
+}
+</style>
+</head><body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">CIVL3155 · Hydrology &amp; Free Surface Flows</div>
+  <h1>Exam Sprint: 48 hours, zero to pass</h1>
+  <p class="lede">Built from all your lectures (both halves), every tutorial and solution set, and the 2022, 2023 and 2024 finals. The papers recycle questions almost word for word, so this guide is aimed at the questions that keep coming back. It's an open-book exam, so print the Open-book pack tab and bring it.</p>
+</div></header>
+
+<nav class="tabs" aria-label="Sections"><div class="wrap" role="tablist">
+  <button role="tab" data-v="plan">Plan</button>
+  <button role="tab" data-v="learn">Learn</button>
+  <button role="tab" data-v="formulas">Open-book pack</button>
+  <button role="tab" data-v="drill">MCQ drill</button>
+  <button role="tab" data-v="numbers">Number drills</button>
+  <button role="tab" data-v="papers">Past papers solved</button>
+</div></nav>
+
+<main><div class="wrap">
+
+<!-- ============ PLAN ============ -->
+<section class="view" id="v-plan">
+  <div class="card">
+    <div class="eyebrow">What you are walking into</div>
+    <h2>180 minutes, open book, 100 marks</h2>
+    <p>10 minutes planning time. <b>Any written or printed material is allowed</b> (annotated notes too). Casio FX82 or a UQ-approved calculator only. Multiple choice goes on a Gradescope bubble sheet; short answers go in the space under each question.</p>
+    <p>The split has been about <b>50–60 marks free-surface flow (FSF)</b> and <b>40–50 marks hydrology</b>. The most recent paper (2024) was: hydrology MCQ 10 · FSF short answer 50 · hydrology short answer 40. The table pools all three papers (300 marks) by topic.</p>
+    <div class="scroll"><table class="marks">
+      <thead><tr><th>Topic</th><th>Lesson</th><th>Marks /300</th><th style="width:28%">Weight</th></tr></thead>
+      <tbody id="weights"></tbody></table></div>
+    <div class="note"><b>The big insight.</b> The papers repeat themselves. The Weibull flood question is <i>identical</i> in 2022 and 2024 apart from one number. The lake water balance (60,000 m³ + 60 ML − 130 ML) shows up in 2022 and 2023. There's a lysimeter question every year, and every year has a "rainfall–runoff table → hyetograph, runoff depth, loss %, front/middle/back-loaded, temporal pattern" question. The true/false statements get reused too. On the FSF side, every paper has one <b>specific-energy transition</b> problem and one <b>momentum force</b> problem, plus scaling and friction. Learn those procedures and you've covered most of the marks.</div>
+    <div class="note crit"><b>Open book is a trap if you're unprepared.</b> You won't have time to learn anything in the room. What helps is a short printed pack with the procedures and worked examples you've already practised. The <i>Open-book pack</i> tab has a print button: print it Wednesday night and write your own notes on it.</div>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">Your 48-hour plan</div>
+    <h2>Tick it off as you go</h2>
+    <p class="cap">Times assume the exam is around Thursday afternoon (48 h from Tuesday 5:30 pm). If it's Thursday morning, move Thursday's timed run to Wednesday night and only do the last block on the day. Ticks are saved in this browser.</p>
+    <div class="progress"><span id="pct">0%</span><div class="bar"><i id="pbar" style="width:0%"></i></div><button class="btn" id="resetPlan" type="button">Reset</button></div>
+    <div id="plan"></div>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">In the exam room</div>
+    <h3>Spend the 180 minutes like this</h3>
+    <ol>
+      <li><b>Planning time (10 min):</b> read the whole paper. Circle the recycled hydrology questions; they're your fastest marks. For FSF, write down q, E and y<sub>c</sub> for each section before you're allowed to write answers.</li>
+      <li><b>Budget about 1.7 min per mark.</b> A 30-mark FSF question gets ~50 min; a 2-mark MCQ gets ~3 min. If you're stuck, move on.</li>
+      <li><b>Hydrology recycled questions first</b> (lysimeter, Weibull, rainfall–runoff table, lake balance), then the FSF energy and momentum questions, then routing checks (SLR/Muskingum) and sketches.</li>
+      <li><b>Every sketch:</b> label axes and units, show y<sub>n</sub> and y<sub>c</sub> lines, mark controls, name the profile (M1, S3…) and show flow direction. Sketch marks are cheap if you're systematic.</li>
+      <li><b>State assumptions out loud:</b> hydrostatic pressure, no energy loss across short transitions, α = β = 1, steady flow, uniform rain, baseflow constant. The papers say to state any information you think is missing. Do it, then carry on.</li>
+      <li><b>Never leave an MCQ blank.</b> When options differ by a factor of 10 or 3.6, the question is testing units: check them.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ LEARN ============ -->
+<section class="view" id="v-learn" hidden>
+  <div class="card">
+    <div class="eyebrow">Learn</div>
+    <h2>Twelve lessons, in mark order within each half</h2>
+    <p>Lessons 1–5 are free-surface flow (Prof McIntyre's half); 6–12 are hydrology (Dr Eisma's half). Read a lesson once, then do the linked past-paper question <b>from a blank page</b> before checking the <i>Past papers solved</i> tab. Lessons 11–12 are mostly for MCQs.</p>
+  </div>
+  <div id="lessons" style="display:flex;flex-direction:column;gap:12px"></div>
+</section>
+
+<!-- ============ FORMULAS ============ -->
+<section class="view" id="v-formulas" hidden>
+  <div class="card noprint">
+    <div class="eyebrow">Open-book pack</div>
+    <h2>Print this and bring it in</h2>
+    <p>Everything on this tab prints as a compact reference (the other tabs are hidden when printing). Print it Wednesday night, then annotate it by hand with anything you got wrong in practice.</p>
+    <div class="qbar"><button class="btn primary" type="button" id="printPack">Print the pack</button><span class="cap">Tip: print double-sided, "fit to page".</span></div>
+  </div>
+  <div id="pack" style="display:flex;flex-direction:column;gap:20px"></div>
+</section>
+
+<!-- ============ DRILL ============ -->
+<section class="view" id="v-drill" hidden>
+  <div class="card">
+    <div class="eyebrow">MCQ drill</div>
+    <h2>Every past multiple-choice question, plus tutorial extras</h2>
+    <p>All the MCQs from the 2022, 2023 and 2024 finals (2024 Q1–2 repeat 2023 Q11–12), plus tutorial and lecture review questions (which the examiners borrow from). No official keys were released for the finals, so these are worked answers, each checked by calculation. Several FSF ones are 4–5-mark calculations: do them on paper first.</p>
+    <div class="qbar">
+      <select id="qPaper" aria-label="Source"><option value="all">All sources</option><option value="X22">2022 final</option><option value="X23">2023 final</option><option value="X24">2024 final</option><option value="T">Tutorials &amp; lectures</option></select>
+      <select id="qTopic" aria-label="Topic"></select>
+      <button type="button" id="qWrong">Only my misses</button>
+      <button type="button" id="qReset">Clear answers</button>
+      <span class="score" id="qScore"></span>
+    </div>
+  </div>
+  <div id="quiz" style="display:flex;flex-direction:column;gap:14px"></div>
+</section>
+
+<!-- ============ NUMBER DRILLS ============ -->
+<section class="view" id="v-numbers" hidden>
+  <div class="card">
+    <div class="eyebrow">Number drills</div>
+    <h2>Unlimited fresh practice</h2>
+    <p>Each press makes a new problem in the same shape as the exam questions. Work it on paper with your calculator, then reveal the working. Three clean in a row on a drill means that procedure is banked.</p>
+  </div>
+  <div class="card gen" id="g-se"></div>
+  <div class="card gen" id="g-jump"></div>
+  <div class="card gen" id="g-norm"></div>
+  <div class="card gen" id="g-scale"></div>
+  <div class="card gen" id="g-lys"></div>
+  <div class="card gen" id="g-rr"></div>
+  <div class="card gen" id="g-risk"></div>
+  <div class="card gen" id="g-musk"></div>
+</section>
+
+<!-- ============ PAPERS ============ -->
+<section class="view" id="v-papers" hidden>
+  <div class="card">
+    <div class="eyebrow">Past papers solved</div>
+    <h2>Worked solutions for every long question</h2>
+    <p>No official solutions were released for these papers. Everything here is worked from the lecture methods and checked numerically. Where the exam table contains a deliberate error (2023 Q21, 2024 Q10), the solution shows how to find it, because spotting it is where the marks are. Try each one first.</p>
+    <div class="qbar"><select id="pSel" aria-label="Paper"><option value="X24">2024 final (most recent)</option><option value="X23">2023 final</option><option value="X22">2022 final</option></select></div>
+  </div>
+  <div id="papers" style="display:flex;flex-direction:column;gap:12px"></div>
+</section>
+
+</div></main>
+<footer><div class="wrap">Made for one student's CIVL3155 sprint, Semester 2 2026. Worked answers are not official; check anything that looks off against your lecture slides.</div></footer>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const fx=(x,d=2)=>Number(x).toFixed(d);
+const G=9.81;
+
+/* ---------- routing ---------- */
+const views=["plan","learn","formulas","drill","numbers","papers"];
+function show(v){if(!views.includes(v))v="plan";views.forEach(x=>{$("#v-"+x).hidden=x!==v});
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v?"true":"false"));
+  document.body.dataset.view=v;}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.v;show(b.dataset.v);window.scrollTo({top:0})}));
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* ---------- SVG plot helpers ---------- */
+function svgFrame(w,h,inner,cls="net"){return `<div class="netbox"><svg class="${cls}" viewBox="0 0 ${w} ${h}" role="img">${inner}</svg></div>`}
+/* Specific-energy diagram: curves [{q,lab}], points [{E,y,lab,c}] */
+function eyPlot(o){
+  const W=600,H=380,L=56,R=20,T=16,B=46,Em=o.Emax,ym=o.ymax;
+  const X=e=>L+(e/Em)*(W-L-R),Y=y=>H-B-(y/ym)*(H-T-B);
+  let s=`<rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="none" stroke="var(--line)"/>`;
+  for(let i=0;i<=Em;i+=o.Estep||0.5){s+=`<line x1="${X(i)}" y1="${T}" x2="${X(i)}" y2="${H-B}" stroke="var(--soft)"/><text x="${X(i)}" y="${H-B+16}" font-size="11" text-anchor="middle">${+i.toFixed(2)}</text>`}
+  for(let i=0;i<=ym;i+=o.ystep||0.5){s+=`<line x1="${L}" y1="${Y(i)}" x2="${W-R}" y2="${Y(i)}" stroke="var(--soft)"/><text x="${L-6}" y="${Y(i)+4}" font-size="11" text-anchor="end">${+i.toFixed(2)}</text>`}
+  s+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(Math.min(Em,ym))}" y2="${Y(Math.min(Em,ym))}" stroke="var(--muted)" stroke-dasharray="4 4"/><text x="${X(Math.min(Em,ym)*0.92)}" y="${Y(Math.min(Em,ym)*0.92)-6}" font-size="11" fill="var(--muted)">E = y</text>`;
+  const cols=["var(--accent)","var(--crit)","var(--ok)","var(--warn)"];
+  o.curves.forEach((c,k)=>{let d="";const yc=Math.cbrt(c.q*c.q/G);
+    for(let y=0.04;y<=ym;y+=0.01){const E=y+c.q*c.q/(2*G*y*y);if(E>Em)continue;d+=(d?"L":"M")+X(E).toFixed(1)+" "+Y(y).toFixed(1)}
+    s+=`<path d="${d}" fill="none" stroke="${cols[k]}" stroke-width="2.2"/>`;
+    s+=`<line x1="${X(0)}" y1="${Y(yc)}" x2="${X(1.5*yc)}" y2="${Y(yc)}" stroke="${cols[k]}" stroke-dasharray="2 3"/><text x="${X(0)+4}" y="${Y(yc)-4}" font-size="11" fill="${cols[k]}">y꜀ = ${fx(yc)} (${c.lab})</text>`;});
+  (o.pts||[]).forEach(p=>{s+=`<circle cx="${X(p.E)}" cy="${Y(p.y)}" r="5" fill="${p.c||"var(--ink)"}"/><text x="${X(p.E)+8}" y="${Y(p.y)+(p.dy||4)}" font-size="12" font-weight="600">${p.lab}</text>`});
+  s+=`<text x="${(L+W-R)/2}" y="${H-8}" font-size="12" text-anchor="middle">Specific energy E (m)</text><text x="14" y="${(T+H-B)/2}" font-size="12" text-anchor="middle" transform="rotate(-90 14 ${(T+H-B)/2})">Depth y (m)</text>`;
+  return svgFrame(W,H,s);}
+/* Hyetograph (bars from top, right axis) + hydrograph (line). t=[..], rain mm per interval ending at t, Q=[..], qb baseflow */
+function hydroPlot(o){
+  const W=600,H=320,L=56,R=56,T=14,B=44,tm=o.t[o.t.length-1],Qm=o.Qmax,Pm=o.Pmax;
+  const X=t=>L+(t/tm)*(W-L-R),Yq=q=>H-B-(q/Qm)*(H-T-B),Yp=p=>T+(p/Pm)*(H-T-B)*0.55;
+  let s=`<rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="none" stroke="var(--line)"/>`;
+  o.t.forEach(t=>{s+=`<text x="${X(t)}" y="${H-B+15}" font-size="11" text-anchor="middle">${t}</text>`});
+  for(let i=0;i<=Qm;i+=o.Qstep){s+=`<text x="${L-6}" y="${Yq(i)+4}" font-size="11" text-anchor="end">${i}</text><line x1="${L}" x2="${W-R}" y1="${Yq(i)}" y2="${Yq(i)}" stroke="var(--soft)"/>`}
+  for(let i=0;i<=Pm;i+=o.Pstep){s+=`<text x="${W-R+6}" y="${Yp(i)+4}" font-size="11">${i}</text>`}
+  const dt=o.t[1]-o.t[0];
+  o.P.forEach((p,i)=>{if(i===0||!p)return;s+=`<rect x="${X(o.t[i]-dt)+2}" y="${T}" width="${X(dt)-X(0)-4}" height="${Yp(p)-T}" fill="var(--accent)" opacity=".35" stroke="var(--accent)"/>`});
+  let d="";o.t.forEach((t,i)=>{d+=(i?"L":"M")+X(t)+" "+Yq(o.Q[i])});s+=`<path d="${d}" fill="none" stroke="var(--crit)" stroke-width="2.4"/>`;
+  if(o.Q2){let d2="";o.t.forEach((t,i)=>{d2+=(i?"L":"M")+X(t)+" "+Yq(o.Q2[i])});s+=`<path d="${d2}" fill="none" stroke="var(--ok)" stroke-width="2.4" stroke-dasharray="6 4"/>`}
+  if(o.qb!=null)s+=`<line x1="${X(0)}" x2="${X(tm)}" y1="${Yq(o.qb)}" y2="${Yq(o.qb)}" stroke="var(--muted)" stroke-dasharray="5 4"/><text x="${X(tm)-4}" y="${Yq(o.qb)-5}" font-size="11" text-anchor="end" fill="var(--muted)">baseflow ${o.qb} m³/s</text>`;
+  if(o.peak){const i=o.Q.indexOf(Math.max(...o.Q));s+=`<circle cx="${X(o.t[i])}" cy="${Yq(o.Q[i])}" r="5" fill="var(--crit)"/><text x="${X(o.t[i])+8}" y="${Yq(o.Q[i])+4}" font-size="12" font-weight="600">peak ${o.Q[i]}</text>`}
+  s+=`<text x="${(L+W-R)/2}" y="${H-6}" font-size="12" text-anchor="middle">${o.xl||"Time (h)"}</text><text x="14" y="${(T+H-B)/2}" font-size="12" text-anchor="middle" transform="rotate(-90 14 ${(T+H-B)/2})">${o.yl||"Discharge (m³/s)"}</text><text x="${W-10}" y="${(T+H-B)/2}" font-size="12" text-anchor="middle" transform="rotate(90 ${W-10} ${(T+H-B)/2})">${o.pl||"Rainfall (mm)"}</text>`;
+  return svgFrame(W,H,s);}
+
+/* GVF zone sketches */
+function zoneSketch(kind){
+  const W=600,H=230;let s="";
+  const bed=(x)=>kind==="H"?190:150+x*0.06; // gentle slope down to right
+  const line=(off,col,lab,dash)=>{s+=`<line x1="20" y1="${bed(20)-off}" x2="580" y2="${bed(580)-off}" stroke="${col}" stroke-width="1.5" ${dash?'stroke-dasharray="6 4"':''}/><text x="584" y="${bed(580)-off+4}" font-size="12" fill="${col}">${lab}</text>`};
+  s+=`<path d="M20 ${bed(20)} L580 ${bed(580)} L580 ${bed(580)+14} L20 ${bed(20)+14}Z" fill="var(--soft)" stroke="var(--muted)"/>`;
+  if(kind==="M"){line(70,"var(--accent)","yₙ",1);line(36,"var(--crit)","y꜀",1);
+    s+=`<path d="M40 ${bed(40)-72} C 200 ${bed(200)-76}, 360 ${bed(360)-92}, 520 ${bed(520)-120}" fill="none" stroke="var(--ink)" stroke-width="2.4"/><text x="300" y="${bed(300)-104}" font-size="13" font-weight="600">M1 (backwater behind weir / dam)</text>`;
+    s+=`<path d="M40 ${bed(40)-68} C 250 ${bed(250)-66}, 420 ${bed(420)-58}, 540 ${bed(540)-38}" fill="none" stroke="var(--ink)" stroke-width="2.4"/><text x="300" y="${bed(300)-46}" font-size="13" font-weight="600">M2 (drawdown to free overfall)</text>`;
+    s+=`<path d="M60 ${bed(60)-8} C 160 ${bed(160)-14}, 260 ${bed(260)-22}, 330 ${bed(330)-32}" fill="none" stroke="var(--ink)" stroke-width="2.4"/><text x="80" y="${bed(80)+30}" font-size="13" font-weight="600">M3 (under a sluice, rises to a jump)</text>`;
+    s+=`<text x="20" y="24" font-size="13">MILD: yₙ &gt; y꜀. Zone 1 above yₙ, zone 2 between, zone 3 below y꜀</text>`}
+  if(kind==="S"){line(36,"var(--accent)","yₙ",1);line(70,"var(--crit)","y꜀",1);
+    s+=`<path d="M300 ${bed(300)-74} C 400 ${bed(400)-90}, 480 ${bed(480)-108}, 560 ${bed(560)-128}" fill="none" stroke="var(--ink)" stroke-width="2.4"/><text x="330" y="${bed(330)-112}" font-size="13" font-weight="600">S1 (after a jump, behind a weir)</text>`;
+    s+=`<path d="M40 ${bed(40)-70} C 120 ${bed(120)-50}, 220 ${bed(220)-40}, 340 ${bed(340)-37}" fill="none" stroke="var(--ink)" stroke-width="2.4"/><text x="30" y="${bed(30)-84}" font-size="13" font-weight="600">S2 (from y꜀ at the crest down to yₙ)</text>`;
+    s+=`<path d="M60 ${bed(60)-8} C 160 ${bed(160)-18}, 260 ${bed(260)-27}, 400 ${bed(400)-32}" fill="none" stroke="var(--ink)" stroke-width="2.4"/><text x="200" y="${bed(200)+30}" font-size="13" font-weight="600">S3 (rises up to yₙ, e.g. below a sluice)</text>`;
+    s+=`<text x="20" y="24" font-size="13">STEEP: yₙ &lt; y꜀. Zone 1 above y꜀, zone 2 between, zone 3 below yₙ</text>`}
+  return svgFrame(W,H,s);}
+
+/* ---------- topic weights ---------- */
+const WEIGHTS=[["Specific energy, transitions, critical flow","1",64],["Routing & runoff models (SLR, Muskingum, reservoir)","8–9",42],["Rainfall–runoff analysis & rational method","7",38],["Momentum: gate forces, jumps, stilling basins","2",34],["Friction & uniform flow (Darcy, Manning, compound)","3",29],["Scale models (Froude similitude)","5",25],["Flood frequency & risk","10",24],["Water balance, lysimeter, evaporation","6",24],["Flow profiles & controls (sketching)","4",18],["Infiltration","11",2],["Measurement, groundwater, calibration","12","0*"]];
+$("#weights").innerHTML=WEIGHTS.map(w=>`<tr><td>${w[0]}${w[2]>=40?' <span class="pill hot">big</span>':''}</td><td>${w[1]}</td><td class="n">${w[2]}</td><td><div class="bar"><i style="width:${(parseFloat(w[2])||0)/64*100}%"></i></div></td></tr>`).join("")+`<tr><td colspan="4" class="cap">* Taught in 2026 (Weeks 3 and 6) but not examined in 2022–24. Expect at most a few MCQ marks. Lesson 12 covers it in 20 minutes.</td></tr>`;
+
+/* ---------- plan ---------- */
+const PLAN=[
+ {day:"Tuesday 3 Nov",sub:"tonight, ~4.5 h",items:[
+  ["t1","18:00","Read this Plan, then Lesson 1 (specific energy)","The biggest topic. Draw the E–y curve yourself and do the bridge example on paper."],
+  ["t2","19:45","2024 Q7 a–c from a blank page","Then check against Past papers → 2024. Then 2022 MCQs 11–16 (same skill, 24 marks)."],
+  ["t3","21:00","Lesson 6 (water balance & lysimeter) + its MCQs","Quick wins: lysimeter and lake balance appear every year. Do 3 lysimeter drills."],
+  ["t4","22:15","Skim the Open-book pack, then sleep","Sleep by 23:30. Sleep is when today's procedures get consolidated."]]},
+ {day:"Wednesday 4 Nov",sub:"the main day, ~11 h",items:[
+  ["w1","08:00","Lesson 2 (momentum) + Tut 10 Q1 and Q3","Then 2022 Q20–22 (stilling basin) and 2023 MCQ 4–5 (gate force). 3 jump drills."],
+  ["w2","10:00","Lesson 5 (scale models)","2022 Q23, 2023 MCQ 1–3 and 6, 2024 Q7d. Short and very formulaic: easy marks."],
+  ["w3","11:00","Lesson 3 (friction & uniform flow)","2023 MCQ 7 and 9, then 2024 Q8 (compound channel). Practise the Colebrook iteration on your calculator."],
+  ["w4","12:30","Lunch","Get away from the desk."],
+  ["w5","13:15","Lesson 4 (profiles & controls)","2023 Q19 and the five sketching questions in Lesson 4. Say the profile names out loud."],
+  ["w6","14:45","Lesson 7 (rainfall–runoff & rational method)","2022 Q17 and 2023 Q22 (the same question twice), then the IFD/rational MCQs."],
+  ["w7","16:15","Lesson 10 (flood frequency & risk)","2024 Q11 (= 2022 Q18). Risk and Weibull drills until they're automatic."],
+  ["w8","17:30","Dinner / break","Walk outside."],
+  ["w9","18:30","Lessons 8–9 (SLR, reservoir MEM, Muskingum)","2024 Q10 (25 marks!), 2023 Q21, 2022 Q19. The skill is checking a table for errors."],
+  ["w10","20:30","Full MCQ drill pass","Every question, all sources. Note each miss and re-read that lesson's box."],
+  ["w11","21:30","Print the Open-book pack and annotate it","Add your own reminders in the margins. Sleep by 23:00."]]},
+ {day:"Thursday 5 Nov",sub:"exam day",items:[
+  ["e1","08:00","Lessons 11–12 (infiltration, measurement, groundwater)","Theory for MCQs. 40 minutes max."],
+  ["e2","09:00","Timed run: 2024 paper, 150 min, closed laptop","Use only your printed pack and calculator. Mark it against Past papers."],
+  ["e3","12:00","Lunch, then fix weak spots","Redo whichever question lost the most marks, plus 2 drills of that type. MCQ 'Only my misses'."],
+  ["e4","Last hour","Stop studying","Eat. Pack: calculator (FX82 with UQ label), printed pack, pens, ruler, ID. Arrive early."]]}
+];
+function renderPlan(){const done=store.get("civl3155-plan",{});let html="",n=0,c=0;
+ PLAN.forEach(d=>{html+=`<div class="day"><h3>${d.day} <small>${d.sub}</small></h3>`;
+  d.items.forEach(([id,t,b,de])=>{n++;if(done[id])c++;html+=`<label class="task ${done[id]?"done":""}"><input type="checkbox" data-id="${id}" ${done[id]?"checked":""}><span><span class="t">${t}</span><b>${b}</b><span class="d">${de}</span></span></label>`});html+="</div>"});
+ $("#plan").innerHTML=html;const p=Math.round(c/n*100);$("#pct").textContent=p+"%";$("#pbar").style.width=p+"%";
+ document.querySelectorAll("#plan input").forEach(i=>i.addEventListener("change",()=>{const d=store.get("civl3155-plan",{});d[i.dataset.id]=i.checked;store.set("civl3155-plan",d);renderPlan()}));}
+$("#resetPlan").addEventListener("click",()=>{store.set("civl3155-plan",{});renderPlan()});
+renderPlan();
+
+/* ---------- lessons ---------- */
+const LESSONS=[
+{t:"1 · Specific energy, critical flow and transitions",s:"FSF · 64/300 marks · 2024 Q7a–c · 2022 Q11–16, Q24 · 2023 MCQ1, MCQ8 · Tut wk 9",open:true,h:`
+<p>Most FSF marks come from one idea: <b>over a short transition (a step in the bed, a narrowing, a bridge, a weir) total energy H stays constant, so you can find the depth on the other side.</b></p>
+<div class="f">Total head      H = z + y + V²/2g          (z = bed level above datum)
+Specific energy E = y + V²/2g = y + q²/(2g y²)   rectangular, q = Q/B (m²/s)
+General section E = y + Q²/(2g A²)
+Across a short transition with no losses:  z₁ + E₁ = z₂ + E₂   →   E₂ = E₁ − Δz</div>
+<h3>Critical flow: the minimum-energy state</h3>
+<div class="f">Rectangular:  y꜀ = (q²/g)^(1/3)    E_min = 1.5 y꜀    V꜀ = √(g y꜀)
+Froude:       Fr = V / √(g y)     Fr &lt; 1 subcritical (deep, slow)   Fr &gt; 1 supercritical (shallow, fast)
+Any shape:    Q² B / (g A³) = 1   (B = top width)      Fr = V / √(g A/B)
+Triangle, side 1V:mH:   A = m y², B = 2 m y   →   y꜀ = (2Q² / (g m²))^(1/5)
+Max discharge for a given E:   q_max = √( g (2E/3)³ )</div>
+${eyPlot({curves:[{q:2,lab:"q = 2"},{q:2.5,lab:"q = 2.5"}],pts:[{E:1.263,y:1.2,lab:"1 (y=1.2)"},{E:1.263,y:1.09,lab:"2 (y=1.09)",dy:14,c:"var(--crit)"}],Emax:3,ymax:2.5})}
+<p class="cap">For each q there is one curve. For any E above E<sub>min</sub> there are two "alternate depths": the upper branch is subcritical, the lower supercritical. Narrowing the channel raises q, which moves the curve right. The dots are the lecture bridge example at Q = 10 m³/s.</p>
+<h3>The transition procedure (works for every exam version)</h3>
+<ol class="steps">
+<li>Find q at every section (q = Q/B). Find E₁ from the known depth: E₁ = y₁ + q₁²/(2g y₁²). Check Fr₁: sub- or supercritical?</li>
+<li>Energy at the next section: <code>E₂ = E₁ − Δz</code> (Δz = rise in bed; negative for a drop).</li>
+<li>Compare with <code>E_min,2 = 1.5 y꜀₂</code>.
+ <ul><li><b>E₂ ≥ E<sub>min,2</sub></b>: solve E₂ = y₂ + q₂²/(2g y₂²) on the <b>same branch</b> as upstream (subcritical stays subcritical).</li>
+ <li><b>E₂ &lt; E<sub>min,2</sub></b>: impossible, so the transition <b>chokes</b>. Then y₂ = y꜀₂, E₂ = E<sub>min,2</sub>, and upstream energy rises to E₁ = E<sub>min,2</sub> + Δz. Solve for the new (deeper) y₁. <b>Afflux</b> = new y₁ − old y₁.</li></ul></li>
+<li>Downstream of a choke (critical) section, with no downstream control, the flow continues on the <b>supercritical</b> branch. With deep tailwater there's a hydraulic jump instead (Lesson 2).</li>
+<li>Say where the flow is controlled from. Subcritical flow is controlled <b>from downstream</b>, supercritical <b>from upstream</b>, and a critical section is itself the control.</li></ol>
+<div class="note"><b>Solving the cubic on a Casio FX82 (no equation solver needed).</b> Use fixed-point iteration. Press <code>=</code> repeatedly:<br>
+• <b>Subcritical root:</b> start with y = E, then <code>y ← E − q²/(2g y²)</code>. Converges because Fr² &lt; 1.<br>
+• <b>Supercritical root:</b> start with y = 0, then <code>y ← q / √(2g(E − y))</code>. Converges because 1/Fr² &lt; 1.<br>
+On an FX82, type the formula with <code>Ans</code> in place of y, then keep pressing <code>=</code>. 4–6 presses gets 3 decimals.</div>
+<h3>Worked example: 2024 Q7 (30 marks)</h3>
+<p>Rectangular, horizontal, B = 5 m, Q = 20 m³/s, y₁ = 2 m. The bridge narrows it to 4 m (location 2), then it widens back to 5 m (location 3). Location 2 is not critical.</p>
+<div class="f">q₁ = 20/5 = 4 m²/s   V₁ = 2 m/s   E₁ = 2 + 2²/19.62 = 2.204 m   Fr₁ = 0.45 (sub)
+q₂ = 20/4 = 5 m²/s   y꜀₂ = (25/9.81)^(1/3) = 1.366 m   E_min,2 = 2.049 m &lt; 2.204 ✓ no choke
+y₂: y ← 2.204 − 25/(19.62 y²)   →   y₂ = 1.82 m  (subcritical branch, no control to switch)
+y₃: back to q = 4, E₃ = E₁ (no losses), stay subcritical  →  y₃ = 2.00 m
+
+c) Bed raised Δz = 0.3 m, afflux ≤ 0.4 m. Minimum width is when location 2 is just critical:
+   y₁ = 2.4 → E₁ = 2.4 + 16/(19.62×2.4²) = 2.542 m
+   E₂ = 2.542 − 0.3 = 2.242 = 1.5 y꜀  →  y꜀ = 1.494 m
+   q₂ = √(g y꜀³) = 5.72 m²/s   →   B₂,min = 20/5.72 = 3.50 m</div>
+<p>Note: with Δz = 0.3 m and the original 4 m width, E₂ = 1.904 m &lt; E<sub>min</sub> = 2.049 m, so the step alone already chokes the flow. That's why critical flow is the governing case in (c).</p>
+<h3>Broad-crested weir (Tut wk 9 Q3, Tut wk 10 Q2)</h3>
+<div class="f">Critical depth sits on the crest:  E_upstream = Δz_crest + 1.5 y꜀
+135 m³/s, B = 15, crest 2.5 m:  q = 9, y꜀ = 2.02 m, E₁ = 2.5 + 3.03 = 5.53 → y₁ = 5.39 m
+Downstream (no tailwater control): supercritical root of E = 5.53 → y₃ = 0.95 m</div>
+<p>Over the crest the flow speeds up because the bed rises, so E drops to E<sub>min</sub> and the flow passes through critical. After the crest, gravity accelerates it down the supercritical branch. It can't return to the upstream depth without a jump.</p>
+<div class="note crit"><b>Common traps.</b> (1) Using H instead of E on the far side of a step: subtract Δz. (2) Taking the wrong root. (3) Forgetting that IFD/Q/q units differ: q is per metre of width. (4) "Do not assume it's a weir" (2022): check E₂ against E<sub>min</sub> first. Only call it critical if it chokes.</div>`},
+
+{t:"2 · Momentum: forces on gates and blocks, hydraulic jumps",s:"FSF · 34/300 · 2022 Q20–22 · 2023 MCQ4–5, Q18 · Tut wk 10",h:`
+<p>Energy can't tell you a force, and it can't cross a jump (the jump loses energy you can't predict). For both you need <b>momentum</b>: the net force on a control volume equals the rate of momentum change.</p>
+<div class="f">Control volume from section 1 (upstream) to section 2, per metre width, α = β = 1:
+   ½ρg y₁²  −  ½ρg y₂²  −  F  =  ρ q (V₂ − V₁)
+   F = force exerted BY the structure ON the water, taken positive pointing upstream
+   → F = ½ρg (y₁² − y₂²) − ρ q (V₂ − V₁)
+Force of water on the structure = same magnitude; positive F means it pushes DOWNSTREAM.
+Total force = F × channel width.</div>
+<h3>Sluice gate (2023 MCQ4, lecture example)</h3>
+<ol class="steps"><li>Get the unknown depth from <b>energy</b> (no loss across a gate): E₁ = E₂, supercritical root downstream.</li>
+<li>Then use <b>momentum</b> for the force. Lecture: q = 2, y₁ = 1.17, y₂ = 0.5 → F = 908 N/m downstream on the gate.</li></ol>
+<div class="f">2023 MCQ4:  y₁ = 32 m, q = 12.44 m²/s, B = 18 m
+E₁ = 32.008 → y₂ = 0.500 m (supercritical iteration)   V₁ = 0.389, V₂ = 24.86 m/s
+F = 4905(32² − 0.5²) − 1000·12.44·(24.86 − 0.39) = 5.021 MN − 0.304 MN = 4.72 MN/m
+Total = 4.72 × 18 = 85 MN, acting DOWNSTREAM on the gate</div>
+<h3>Hydraulic jump (free, no blocks)</h3>
+<div class="f">y₂/y₁ = ½ (√(1 + 8 Fr₁²) − 1)        y₁/y₂ = ½ (√(1 + 8 Fr₂²) − 1)
+Energy loss  ΔE = E₁ − E₂ = (y₂ − y₁)³ / (4 y₁ y₂)   (rectangular)
+Power dissipated  P = ρ g Q ΔE   (W)
+Jump type: Fr₁ 1–1.7 undular · 4.5–9 steady · &gt; 9 strong</div>
+<p>Lecture example: q = 2, y₂ = 1.3 → Fr₂² = 0.186 → y₁ = 0.375 m, ΔE = 0.40 m. If the measured y₂ doesn't match the sequent depth, the momentum isn't balanced: the jump moves (unsteady), or a <b>structure is supplying the missing force</b>.</p>
+<h3>Stilling basin with baffle blocks (2022 Q20–22, 22 marks)</h3>
+<div class="f">B = 12 m, Q = 125 m³/s, V₁ = 12.5, V₂ = 1.5 m/s
+q = 10.42 m²/s   y₁ = q/V₁ = 0.833 m   y₂ = q/V₂ = 6.94 m
+F = 4905(0.833² − 6.94²) − 1000·10.42·(1.5 − 12.5)
+  = 3,406 − 236,545 + 114,583 = −118,600 N/m
+Negative → blocks push the water DOWNSTREAM, so water pushes the blocks UPSTREAM
+Total on the row = 118.6 kN/m × 12 m = 1.42 MN, directed upstream
+Head loss ΔH = (0.833 + 12.5²/19.62) − (6.94 + 1.5²/19.62) = 8.797 − 7.059 = 1.74 m
+Power = 1000 × 9.81 × 125 × 1.74 = 2.13 MW</div>
+<p>Why upstream? A free jump from y₁ = 0.833 m (Fr₁ = 4.37) would only reach y₂ = 4.75 m. The tailwater here is 6.94 m, so its hydrostatic thrust is bigger than the incoming momentum can resist, and the blocks must be holding the water back. Write that reasoning down; that's where the 5 "direction" marks come from.</p>
+<h3>The sketch they always ask for (5–6 marks)</h3>
+<ul><li>Water surface: deep upstream → gate/jump → shallow (or deep after the jump). Flow arrow.</li>
+<li>Control volume boundary drawn between two sections where streamlines are <b>parallel to the bed</b>, so pressure is hydrostatic there.</li>
+<li>Forces: hydrostatic ½ρg y₁² acting at y₁/3 from the bed (pointing downstream), ½ρg y₂² at y₂/3 (pointing upstream), the structure force F, plus <b>weight and bed reaction</b> (vertical, they cancel). Friction neglected (short CV).</li>
+<li>At the gate itself, pressure is <b>not</b> hydrostatic (streamlines converge, vertical acceleration), so the force on the gate is less than ½ρg y₁².</li></ul>
+<h3>Small surges (theory MCQ)</h3>
+<div class="f">c − v = ± √(g y)    (small surge, wide horizontal channel)
+Negative surge travels upstream only if the flow is subcritical; it's stationary at critical.</div>`},
+
+{t:"3 · Friction and uniform flow (Darcy, Manning, compound channels)",s:"FSF · 29/300 · 2024 Q8 (20 marks) · 2023 MCQ7, MCQ9 · Tut wk 11",h:`
+<div class="f">Bed shear stress   τ₀ = ρ g R S_f          R = A/P (hydraulic radius)
+                    (= f ρ V² / 8 with Darcy)
+Manning            V = R^(2/3) S^(1/2) / n         S_f = V² n² / R^(4/3)
+Chézy              V = C √(R S)                    C = R^(1/6) / n
+Darcy–Weisbach     S_f = f V² / (2 g D_H)          D_H = 4R = 4A/P
+Reynolds           Re = V D_H / ν     ν ≈ 1.0×10⁻⁶ m²/s
+Fully rough        1/√f = 2 log₁₀(D_H/k_s) + 1.14
+Colebrook–White    1/√f = −2 log₁₀( k_s/(3.71 D_H) + 2.51/(Re √f) )</div>
+<p><b>Uniform (normal) flow</b> means S<sub>f</sub> = S₀, so depth doesn't change along the channel: y = y<sub>n</sub>. With Darcy, rearrange: <code>V = √(2 g D_H S₀ / f)</code>, then Q = V A.</p>
+<div class="f">Wide rectangular, Manning:  yₙ = (q n / √S₀)^0.6        (R ≈ y)
+Rectangular:  A = B y   P = B + 2y
+Trapezoid (side slopes m H : 1 V):  A = (B + m y) y   P = B + 2y√(1 + m²)
+Triangle (1V : mH each side):       A = m y²         P = 2y√(1 + m²)
+Semicircle of radius r (full):      A = π r²/2       P = π r</div>
+<h3>Calculator recipe for f (Colebrook)</h3>
+<ol class="steps"><li>Start with the fully-rough value x = 2 log(D<sub>H</sub>/k<sub>s</sub>) + 1.14 (this is 1/√f).</li>
+<li>Get V and Re, then iterate <code>x ← −2 log(k_s/(3.71 D_H) + 2.51 x / Re)</code> two or three times. f = 1/x².</li>
+<li>If Re is in the millions the correction is tiny. Say so ("fully rough turbulent") and move on.</li></ol>
+<h3>Worked: 2024 Q8a, concrete channel with a semicircular invert</h3>
+<div class="f">Semicircle D = 2 m (r = 1) + vertical walls up to d₁ = 2 m total depth, k_s = 4 mm, S₀ = 0.0005
+A = π(1)²/2 + 2×1 = 3.571 m²     P = π(1) + 2×1 = 5.142 m     R = 0.694 m   D_H = 2.778 m
+Fully rough: 1/√f = 2 log(2.778/0.004) + 1.14 = 6.823 → f = 0.0215
+V = √(2·9.81·2.778·0.0005 / 0.0215) = 1.13 m/s   Re = 3.1×10⁶ (Colebrook barely changes f: 0.0216)
+Q_max ≈ 1.13 × 3.571 = 4.0 m³/s</div>
+<h3>Compound channels (2024 Q8b, Tut wk 11 Q7)</h3>
+<ul><li>Split into the main channel plus each flood plain with <b>vertical dividing lines</b>. The dividing lines are <b>not</b> wetted perimeter.</li>
+<li>Each sub-section has the same S<sub>f</sub> = S₀ (uniform flow) but its own A, P, roughness and f.</li>
+<li>Q = ΣQ<sub>i</sub>. Guess the flood-plain depth d₂, compute ΣQ, adjust (bisection) until it equals the target.</li></ul>
+<div class="f">2024 Q8b: Q = 150 m³/s. Main channel A = 3.571 + 2d₂, P = 5.142;
+flood plains 20 m and 40 m wide, k_s = 50 mm, P = width + d₂ (outer wall only)
+d₂ = 1.71 m →  main 11.9 + left 45.2 + right 92.9 = 150 m³/s ✓</div>
+<div class="note crit"><b>Trap (2023 MCQ7):</b> when the flow is <i>gradually varied</i> (y ≠ y<sub>n</sub>), the shear stress uses <b>S<sub>f</sub></b> computed from the actual V and R, not S₀. Triangular canal: S<sub>f</sub> = 0.0272 vs S₀ = 0.0085, so τ₀ = 134 Pa (using S₀ would give 42 Pa, which isn't even an option).</div>`},
+
+{t:"4 · Flow profiles and controls (sketching)",s:"FSF · 18/300 · 2023 Q19 (18 marks) · 2022 Q12, Q14, Q24 · Tut wk 12 + sketching questions",h:`
+<div class="f">dy/dx = (S₀ − S_f) / (1 − Fr²)        (gradually varied, steady, α = 1)</div>
+<p>Signs decide everything: depth below y<sub>n</sub> means S<sub>f</sub> &gt; S₀; depth below y<sub>c</sub> means Fr &gt; 1. Profiles approach y<sub>n</sub> asymptotically and hit y<sub>c</sub> vertically (that's where a jump or free-fall happens).</p>
+${zoneSketch("M")}
+${zoneSketch("S")}
+<div class="scroll"><table class="t"><tr><th class="l">Slope</th><th>Test</th><th class="l">Zone 1</th><th class="l">Zone 2</th><th class="l">Zone 3</th></tr>
+<tr><td class="l">Mild M</td><td>yₙ &gt; y꜀</td><td class="l">M1 y &gt; yₙ, rises (backwater)</td><td class="l">M2 y꜀&lt;y&lt;yₙ, falls (drawdown)</td><td class="l">M3 y &lt; y꜀, rises → jump</td></tr>
+<tr><td class="l">Steep S</td><td>yₙ &lt; y꜀</td><td class="l">S1 y &gt; y꜀, rises</td><td class="l">S2 yₙ&lt;y&lt;y꜀, falls to yₙ</td><td class="l">S3 y &lt; yₙ, rises to yₙ</td></tr>
+<tr><td class="l">Horizontal H</td><td>yₙ = ∞</td><td class="l">none</td><td class="l">H2 y &gt; y꜀, falls</td><td class="l">H3 y &lt; y꜀, rises</td></tr>
+<tr><td class="l">Adverse A</td><td>S₀ &lt; 0</td><td class="l">none</td><td class="l">A2 falls</td><td class="l">A3 rises</td></tr></table></div>
+<h3>Four steps for any sketch</h3>
+<ol class="steps"><li>Sketch the bed (slopes, steps, structures).</li><li>Compute y<sub>n</sub> and y<sub>c</sub> for each reach; draw them as dashed lines; classify each reach as mild or steep.</li>
+<li>Mark the controls: free overfall or mild→steep break → y<sub>c</sub>; long uniform reach → y<sub>n</sub>; weir/sluice → depth set by the structure. <b>Subcritical profiles are computed upstream from a downstream control; supercritical profiles are computed downstream from an upstream control.</b></li>
+<li>Join them with the right profile types; put a jump where the supercritical depth's sequent depth equals the subcritical depth.</li></ol>
+<h3>2023 Q19: the triangular canal</h3>
+<div class="f">y꜀ = 1.69 m, yₙ = 1.31 m  → STEEP (yₙ &lt; y꜀). Observed y = 1.05 m &lt; yₙ → zone 3 → S3
+Fr = 3.27 &gt; 1, supercritical → controlled from UPSTREAM
+S3: S₀ − S_f &lt; 0 and 1 − Fr² &lt; 0 → dy/dx &gt; 0, so depth INCREASES downstream,
+approaching yₙ = 1.31 m asymptotically</div>
+<h3>The five sketching practice questions (lecture slides)</h3>
+<ol>
+<li>Long slope, y꜀ = 0.2, y<sub>n</sub> = 1, weir at the end → mild. <b>M1</b> rising towards the weir, uniform y<sub>n</sub> far upstream, y꜀ over the weir crest.</li>
+<li>y꜀ = 0.7, y<sub>n</sub> = 0.5, weir at end → steep. Uniform supercritical y<sub>n</sub> upstream, a <b>jump</b> up to an <b>S1</b> curve that rises to the weir.</li>
+<li>y꜀ = 0.2, y<sub>n</sub> = 1, free overflow → mild. <b>M2</b> drawdown from y<sub>n</sub> to y꜀ at the brink.</li>
+<li>Horizontal, sluice opening 0.15 m (&lt; y꜀ = 0.3), free overflow at end → <b>H3</b> rising from the vena contracta. If the channel is long enough: jump, then <b>H2</b> falling to y꜀ at the overflow. If short: H3 all the way to the end.</li>
+<li>Horizontal with a small step, fixed downstream depth 0.7 m (&gt; y꜀ = 0.2) → subcritical, controlled from downstream: <b>H2</b> with depth decreasing in the flow direction; the surface dips over a step up (E falls by Δz on the subcritical branch, so y falls by more than Δz).</li></ol>
+<h3>Numerical step (Tut wk 12 Q1c)</h3>
+<div class="f">Backwater step (subcritical, march upstream):  y(x−Δx) = y(x) − Δx · (dy/dx)|ₓ
+Forward step (supercritical, march downstream):  y(x) = y(x−Δx) + Δx · (dy/dx)|ₓ₋Δₓ
+Standard step for natural channels: h₂ = h₁ + αV₁²/2g − αV₂²/2g + ½(S_f1 + S_f2)Δx, iterate</div>`},
+
+{t:"5 · Scale models (Froude similitude)",s:"FSF · 25/300 · 2022 Q23 · 2023 MCQ1–3, MCQ6 · 2024 Q7d · Tut wk 13",h:`
+<p>Free-surface models keep the <b>Froude number</b> equal in model and prototype (gravity dominates). You can't also match Reynolds number with water, so instead you check the model is still <b>turbulent</b>.</p>
+<div class="f">N = L_prototype / L_model   (a "1:N" or "N:1" scale, e.g. 1:20 → N = 20)
+Length, depth, width   ×N         Area  ×N²        Volume ×N³
+Velocity               ×N^½       Time  ×N^½
+Discharge Q            ×N^(5/2)   q (per width) ×N^(3/2)
+Force                  ×N³        Pressure ×N      Power ×N^(7/2)
+Energy loss (head)     ×N         Reynolds number ×N^(3/2)
+Model discharge: Q_m = Q_p / N^(5/2)    Min N from a lab pump limit: N ≥ (Q_p / Q_m,max)^0.4</div>
+<div class="f">Re = V D_H / ν      wide channel: D_H ≈ 4y → Re = 4q/ν
+Course rule of thumb (Tut wk 13): Re_model &gt; 1×10⁵ → friction scale effects negligible
+Also: model depths below ~30–50 mm → surface tension and viscosity effects; hard to measure</div>
+<h3>Worked</h3>
+<div class="f">2024 Q7d:  Q_p = 20 m³/s, lab ≤ 0.060 m³/s → N^(5/2) ≥ 333.3 → N ≥ 10.2  (use 1:11 or 1:10.2)
+Tut 13:    135 m³/s at 1:20 → Q_m = 135/20^2.5 = 0.075 m³/s
+2023 MCQ2: Q_m = 0.0099 → Q_p = 0.0099 × 42^2.5 = 0.0099 × 11,432 = 113 m³/s
+2023 MCQ6: force ratio = N³ = 42³ = 74,088
+2022 Q23b: model head loss 0.226 m × 12 = 2.71 m in the prototype</div>
+<p>"Can the model be built in PVC?" Yes: PVC/perspex is smooth, which roughly matches smooth concrete at scale. "Is the model laminar?" Check Re; the 2023 sluice model has Re ≈ 9×10⁴, so it's turbulent (a little under the 10⁵ guideline, so mention mild scale effects).</p>`},
+
+{t:"6 · Water balance, lysimeters and evaporation",s:"Hydrology · 24/300 · 2024 Q1–4, Q9 · 2023 Q10–12, Q15, Q20 · 2022 Q1, Q6, Q8 · Tut 1–2",h:`
+<div class="f">ΔS = (ΣInflows − ΣOutflows) Δt            discrete: S(t+Δt) = S(t) + (I − Q)Δt
+Residence time  T_r = S / Q_out
+Storage can't be negative or exceed capacity → clip it (and comment!)</div>
+<h3>Units: half the marks in this lesson</h3>
+<div class="f">1 ML = 1,000 m³          1 mm over 1 km² = 1,000 m³ = 1 ML
+1 mm over 1 ha = 10 m³   1 m³/s for 1 day = 86,400 m³ = 86.4 ML
+1 kg of water = 0.001 m³; spread over 1 m² that's 1 mm
+Rain depth × area = volume.   Volume / area = depth.</div>
+<h3>Lysimeter (every single year)</h3>
+<div class="f">ET = P − D − ΔS        (all as depths over the lysimeter area; runoff = 0)
+ΔS = mass change / (ρ_w A):   gains → ΔS +,  loses → ΔS −
+2024 Q9: gains 6 kg, A = 3 m², 48 h, P = 24 mm, D = 0.006 m³
+   ΔS = 0.006/3 = 2 mm   D = 0.006/3 = 2 mm   ET = 24 − 2 − 2 = 20 mm / 2 d = 10 mm/d
+   Volumes: P 0.072 m³ in · D 0.006 out · ET 0.060 out · ΔS +0.006 stored
+2023 Q15: loses 16 kg, A = 2 m², 12 h: ΔS = −8 mm, D = 6 mm → ET = 24 − 6 + 8 = 26 mm → 2.17 mm/h
+2022 Q8:  gains 20 kg, A = 1 m², 24 h: ET = 48 − 12 − 20 = 16 mm → 0.67 mm/h</div>
+<h3>The lake question (2022 Q6, 2023 Q20)</h3>
+<div class="f">S₀ = 60,000 m³ = 60 ML.   S = 60 + 60 − 130 = −10 ML → impossible → S = 0 ML
+Comment: the lake dries out; only 120 ML was available, so the predicted 130 ML of losses
+can't all happen (10 ML of demand goes unmet). Losses really depend on storage.</div>
+<p>The systems diagram (1–2 marks): a box for the store, arrows in (rain, river/catchment inflow, groundwater in) and out (evaporation, extraction, outflow/spill, seepage). Write the magnitude and units on each arrow.</p>
+<h3>Evaporation formulas (lecture/Tut 2; 2024 Q4)</h3>
+<div class="f">Energy method:  E_r = R_n / (λ ρ_w)     λ = 2.50025 − 0.002365 T  (MJ/kg)
+   (assumes no change in water temperature, H_s and G negligible)
+   With temperature change: ρ_w V C_p ΔT/Δt = A R_n − A λ E ρ_w − H_s − G
+   2024 Q4: 24.5 MJ/m² over 48 h = 12.25 MJ/m²/d → E = 12.25/(2.45×1000) m/d = 5.00 mm/d
+   W/m² → J/m²/d: × 86,400
+Aerodynamic:  E_a = B(e_s − e_a)   B = 0.102 u / [ln(z/z₀)]²  (mm/d/Pa; z, z₀ same units)
+   e_s = 0.6108 exp(17.27T/(T + 237.3)) kPa    e_a = RH × e_s
+Combination:  E = Δ/(Δ+γ)·E_r + γ/(Δ+γ)·E_a    Δ = 4098 e_s/(237.3 + T)² (e_s in Pa)   γ = 66.8 Pa/°C
+Pan:          E_lake = K E_pan   K ≈ 0.7 (0.64–0.81)</div>
+<div class="note"><b>True/false bank.</b> Evaporation/ET is always an <b>outflow</b> (FALSE if called an inflow). Groundwater can't be ignored just because it's "&lt; 1 m³/s" (FALSE). A stage–discharge curve is a <b>relationship</b> between water level and flow, not a time series (FALSE). Infiltration is a <b>flux</b>, not a store. ET is usually the largest loss from a natural landscape. Urbanisation means <b>more</b> runoff volume, <b>faster</b> and higher peaks, less ET.</div>`},
+
+{t:"7 · Rainfall–runoff analysis and the rational method",s:"Hydrology · 38/300 · 2022 Q17 · 2023 Q22 (same question) · IFD/rational MCQs · Tut 5",h:`
+<p>Every paper has this 11–12-mark question: a table of time, rainfall and runoff. Here's the full procedure (2022 Q17 numbers).</p>
+${hydroPlot({t:[0,0.5,1,1.5,2,2.5,3],P:[0,5,15,7,0,0,0],Q:[2,2,20,45,30,2,2],qb:2,Qmax:50,Qstep:10,Pmax:20,Pstep:5,peak:1})}
+<ol class="steps">
+<li><b>Graph (3 marks):</b> rainfall as <i>bars</i> hanging from the top on a right-hand axis (each bar spans its interval); discharge as a line on the left axis. Label the peak discharge and draw the baseflow line.</li>
+<li><b>Direct runoff depth:</b> subtract baseflow, sum × Δt, divide by area.
+<div class="f">Q − Q_b = 0, 0, 18, 43, 28, 0, 0 m³/s;   Δt = 0.5 h = 1800 s
+V = (18 + 43 + 28) × 1800 = 160,200 m³    depth = 160,200 / 10.01×10⁶ m² = 0.0160 m = 16.0 mm</div></li>
+<li><b>Loss:</b> total rain 5 + 15 + 7 = 27 mm → loss = 27 − 16 = 11 mm = <b>41%</b> of rainfall (runoff coefficient 0.59).</li>
+<li><b>Loading:</b> split the storm duration into thirds. Most rain (and the peak burst, 15 mm) falls in the middle third → <b>middle-loaded</b>.</li>
+<li><b>Temporal pattern table:</b> cumulative % of duration vs cumulative % of rainfall.
+<div class="f">% time   0     33.3    66.7    100
+% rain   0     18.5    74.1    100       (5/27, 20/27, 27/27)</div></li></ol>
+<p>2023 Q22 (4.2 km², baseflow 1.0): direct runoff = (9 + 46 + 29) × 1800 = 151,200 m³ = <b>36 mm</b>; rain 42 mm; loss 6 mm = <b>14%</b>; middle-loaded; pattern 0 / 31.0 / 81.0 / 100%. (The "30" hours in that table is a typo for 3.0.)</p>
+<h3>Loss models</h3>
+<div class="f">Initial loss IL then continuing loss CL (mm/h) — RORB / ARR
+Proportional loss: effective rain = C × total rain (constant fraction)
+Runoff coefficient = runoff volume / rainfall volume = (P − losses)/P</div>
+<div class="f">2022 Q7 / 2024 Q3: 10 km², 6 mm/h for 3 h (6 h), IL 12 mm, no CL
+   excess = 18 − 12 = 6 mm → 6 mm × 10 km² = 60 ML     (6 h: 24 mm → 240 ML)
+2023 Q16: 4 km², 9 mm/h × 36 h = 324 mm; outflow 842.4 ML incl. baseflow 0.5 m³/s × 36 h = 64.8 ML
+   direct = 777.6 ML = 194.4 mm → loss = 129.6 mm</div>
+<h3>Rational method</h3>
+<div class="f">Q_peak = C I A / 360     (m³/s, I in mm/h, A in ha)      = C I A / 3.6  (A in km²)
+I = design intensity for duration = t꜀ at the design AEP (from the IFD table)
+IFD tables in these exams give TOTAL DEPTH (mm): intensity = depth / duration!</div>
+<div class="f">2023 Q13: 5% AEP (1 in 20), 30 min → 56.9 mm → I = 113.8 mm/h
+2023 Q14: 2% AEP (1 in 50), 15 min → 47.3 mm → I = 189.2 mm/h
+          Q = 0.8 × 189.2 × 700 ha / 360 = 294 m³/s   (comment: 7 km² is above QUDM's 5 km² limit)
+2022 Q9:  10% AEP, 9 h — not in table: interpolate 6 h (113) and 12 h (145) → 129 mm → 14.3 mm/h</div>
+<p>Assumptions: whole catchment contributing (storm duration ≥ t<sub>c</sub>), uniform rain and losses, steady state at the peak, small catchment, no storage. AEP ↔ ARI: 50% AEP = 1.44-yr ARI, 20% = 4.48-yr (the table footnote).</p>
+<div class="note"><b>Hydrograph vocabulary (T/F):</b> hyetograph = rainfall vs time. Hydrograph = discharge vs time. Direct runoff hydrograph = total minus baseflow. Lag = time from peak rain to peak flow. Steeper, smoother, denser drainage, smaller → sharper peak. More storage, rougher, longer channels → flatter, later peak.</div>`},
+
+{t:"8 · Runoff routing: single linear reservoir (SLR), RORB and reservoir routing",s:"Hydrology · 2024 Q10 (25 marks!) · 2022 Q19 · Tut 6 (routing Q7–9)",h:`
+<p>Every routing model is a water balance on a store, plus a rule linking storage to outflow.</p>
+<div class="f">dS/dt = I − Q
+RORB:  S = k Q^m    (m ≈ 0.8 in Australia; m = 1 is LINEAR)
+Single linear reservoir (SLR): S = k Q  → in depth units  dq/dt = (i − q)/k
+   i = effective (excess) rain intensity, q = outflow intensity (mm/h)
+   k ≈ catchment time constant (often taken as t꜀)
+Q (m³/s) = q (mm/h) × A (m²) / 3.6×10⁶ = q × A(km²) / 3.6</div>
+<h3>Three ways to step it forward (Δt)</h3>
+<div class="f">Euler (explicit):     q₂ = q₁ + (Δt/k)(i − q₁)
+Mid-point / MEM:      q₂(1 + Δt/2k) = q₁(1 − Δt/2k) + (Δt/k)·ī
+Exact (i constant):   q₂ = i + (q₁ − i) e^(−Δt/k)
+Rule: Δt ≪ k. If Δt ≈ k, Euler goes unstable (lecture RORB example).</div>
+<h3>2024 Q10 in one box (25 marks)</h3>
+<div class="f">A = 900 ha = 9×10⁶ m², t꜀ = 20 min, Δt = 2 min. Rain 16, 12, 8, 8, 4 mm; effective 12, 9, 6, 6, 3
+b) 16 mm in the first interval, decreasing → FRONT-loaded (half of the 48 mm falls in the first third)
+c) effective/total = 12/16 = 9/12 = … = 0.75 → proportional loss = 25%
+d) k = t꜀ = 20 min = 1200 s → Δt/k = 0.1. Check from the table: for steps with constant i (180→180),
+   (180 − 73.903)/(180 − 62.745) = 0.905 = (1 − 0.05)/(1 + 0.05) → Δt/k = 0.10 ✓
+f) Errors found:
+   • Q column is 10× too small: q × A/3.6×10⁶ = 0.25 × 2.5 = 0.625 m³/s (table: 0.063);
+     17.355 mm/h → 43.4 m³/s (table: 4.339). They used 90 ha, not 900 ha.
+   • The scheme averages i between rows, so step 1 uses 180 mm/h, not 360.
+     Exact step 1: q = 360 + (0.25 − 360)e^(−0.1) = 34.5 mm/h (table: 17.4, about half)
+     Exact step 2: q = 270 + (34.5 − 270)e^(−0.1) = 56.9 mm/h (table: 45.7)
+   → rising limb is delayed/underestimated. Fix: apply each interval's own intensity
+     (exact solution), correct the area conversion, keep Δt ≤ k/10.
+e) t꜀ = 5 min → k = 5 min; Δt = 2 min gives Δt/k = 0.4, too coarse → use Δt ≤ 0.5 min.
+   Faster response, higher and earlier peak (q gets close to i within a few minutes).</div>
+<h3>Reservoir / level-pool routing (2022 Q19, Tut 6 Q7)</h3>
+<div class="f">Assumption: storage is a function of OUTFLOW only (level pool)
+Weir: Q = C L h^(3/2);  storage above crest S = 1.1 A h  →  h = S/(1.1A)
+Storage–discharge:  Q = C L (S / 1.1A)^(3/2)
+MEM (unknowns on the left):
+S(t+Δt) + (Δt/2) C L [S(t+Δt)/1.1A]^(3/2) = S(t) + (Δt/2)[I(t) + I(t+Δt)] − (Δt/2) C L [S(t)/1.1A]^(3/2)
+   S m³, Q and I m³/s, Δt s, C −, L m, h m, A m²</div>
+<p>Tut 6 Q7 check: S = 100Q, I = 0, S₀ = 1000 m³, Δt = 60 s → MEM: 1.3 S₂ = 700 → S₂ = 538 m³; exact S = 1000e<sup>−t/100</sup> = 548 m³. For a level pool, <b>peak outflow happens where the outflow curve crosses the falling inflow curve</b> (I = Q at maximum storage).</p>`},
+
+{t:"9 · Muskingum channel routing",s:"Hydrology · 2023 Q21 (12 marks) · Tut 6 Q10 · lecture example",h:`
+<div class="f">Storage = prism + wedge:  S = K[ X I + (1 − X) Q ]
+Q₂ = C₁ I₂ + C₂ I₁ + C₃ Q₁
+D  = 2K(1 − X) + Δt
+C₁ = (Δt − 2KX)/D    C₂ = (Δt + 2KX)/D    C₃ = (2K(1 − X) − Δt)/D      C₁ + C₂ + C₃ = 1
+K ≈ travel time = L / c,   flood-wave celerity c ≈ 1.7 × V (Manning velocity)
+X: 0 (reservoir, level pool) to 0.5; ≈ 0.2 for natural channels
+   X = ½ [1 − Q/(B S₀ L c)]    (Muskingum–Cunge, lecture)
+Δt rules: Δt ≤ (time of rise of inflow)/6 (Shaw);  keep 2KX ≤ Δt ≤ 2K(1−X) so no C is negative</div>
+<h3>"Perform a check" checklist</h3>
+<ol class="steps"><li>Recompute K from L/c and judge X (0.2 is sensible for a natural river).</li>
+<li>Recompute C₁, C₂, C₃ and check they <b>sum to 1</b>.</li>
+<li>Check Δt against the inflow's time of rise.</li>
+<li>Recompute a couple of outflow rows.</li>
+<li>Physical sense: with no tributaries, the outflow peak must be <b>lower and later</b> than the inflow peak, and outflow volume must equal inflow volume.</li></ol>
+<h3>2023 Q21 worked</h3>
+<div class="f">L = 23.97 km, V = 1.0 m/s → c = 1.7 m/s → K = 23,970/1.7 = 14,100 s = 235 min ✓
+X = 0.2 ✓ typical natural channel
+Correct C's (Δt = 120): 2KX = 94, 2K(1−X) = 376, D = 496
+   C₁ = 26/496 = 0.052   C₂ = 214/496 = 0.431   C₃ = 256/496 = 0.516   Σ = 1 ✓
+Table uses C₁ = 0.520 (decimal slip) → ΣC = 1.47 ✗
+Δt check: inflow rises 0 → 200 in 4 h → Δt ≤ 240/6 = 40 min. 120 min is too coarse ✗
+   (2KX = 94 ≤ 120 ≤ 376, so the coefficients are at least non-negative)
+Table outflow peaks at 280 m³/s &gt; inflow peak 200 m³/s and ΣQ ≈ 975 vs ΣI = 500: mass not conserved ✗
+Corrected outflow: 0, 5.2, 56.3, 125.9, 151.3, 78.1, 40.3, 20.8 … → peak ≈ 151 m³/s at 22:00
+Recommend: fix C₁, use Δt ≈ 30–40 min (re-tabulate inflow), recompute K, X from channel data, check mass balance.</div>`},
+
+{t:"10 · Flood frequency and risk",s:"Hydrology · 24/300 · 2024 Q6, Q11 · 2022 Q5, Q10, Q18 · 2023 Q17 · Tut 7",h:`
+<div class="f">AEP = probability of being equalled or exceeded in any one year
+ARI (return period T) ≈ 1/AEP for rare events;  exactly ARI = −1/ln(1 − AEP)
+Risk of ≥1 exceedance in n years:  R = 1 − (1 − AEP)ⁿ
+Exactly k events in n years (binomial): P(k) = C(n,k) p^k (1 − p)^(n−k)
+Independent events: P(A and B) = P(A)·P(B)</div>
+<div class="f">2022 Q10: 1 − (1 − p)⁵⁰ = 0.6358 → (1 − p)⁵⁰ = 0.3642 → p = 0.020 → 1 in 50
+Tut 7 Q3: AEP 0.02 over 30 yr → 1 − 0.98³⁰ = 0.455
+2022/2024 Q(c): AEP 0.2, budget covers ONE inspection in 8 years → budget OK if ≤ 1 event:
+   P(0) = 0.8⁸ = 0.168   P(1) = 8 × 0.2 × 0.8⁷ = 0.336   P(≤1) = 0.50 → about a coin flip</div>
+<h3>Annual maximum series and plotting positions</h3>
+<ol class="steps"><li>Use water years (start on a dry month, e.g. 1 Oct) so one storm isn't counted twice.</li>
+<li>Take <b>one</b> maximum per water year (2023 Q17: year 5's max is autumn 3,100 → ranks 5th of 6,050 / 4,700 / 4,200 / 4,000 / 3,100).</li>
+<li>Rank descending (r = 1 is largest). N = number of years.</li></ol>
+<div class="f">Relative frequency  AEP = r/N
+Weibull             AEP = r/(N + 1)        ← the exams ask for this one
+Gringorten          AEP = (r − 0.44)/(N + 0.12)   (suits Gumbel; ARR uses Cunnane/Gringorten)
+2024 Q6: ARI 20 in a 140-yr record (no correction): r = N/T = 140/20 = 7</div>
+<h3>The Weibull design-check question (2022 Q18 = 2024 Q11)</h3>
+<p>Course method (Tut 7 Q4): use the rank of the <b>observed flood nearest</b> to the design discharge. Mention interpolation between ranks as a refinement.</p>
+<div class="f">2024: Q = 4,000 m³/s
+ 1976 (N = 13): nearest is 4,380.9 (rank 2) → AEP = 2/14 = 0.143 → 1 in 7 yr
+ 2022 (N = 59): nearest is 3,676.3 (rank 7) → AEP = 7/60 = 0.117 → 1 in 8.6 yr
+2022: Q = 5,000 m³/s
+ N = 13: nearest 5,521.7 (rank 1) → 1/14 → 1 in 14 yr
+ N = 59: nearest 4,654.4 (rank 5) → 5/60 → 1 in 12 yr (more frequent than designed)</div>
+<p>Why it changed: 13 years is a very short sample, so plotting positions carry big sampling error. The longer record includes big floods since 1976 (1983, 1989, 1999, 2011, 2013), so the estimate is more reliable. Also possible non-stationarity (land-use change, climate variability) which breaks the assumption that the series is stationary.</p>
+<h3>Gumbel (EV1 / GEV-1)</h3>
+<div class="f">F(x) = exp{−exp[−(x − α)/β]}   F = non-exceedance probability, AEP = 1 − F
+Method of moments: β = √6 σ/π = 0.78σ,  α = μ − 0.5772β
+Inverse: x = α − β ln(−ln F)
+Tut 7 Q5: μ = 410, σ = 280 → β = 218.3, α = 284 → F(1950) = 0.999515
+   AEP = 0.000485 → 100-yr risk = 1 − (1 − 0.000485)¹⁰⁰ = 4.7%</div>
+<p>L-moments are preferred over the method of moments because they're less sensitive to outliers (e.g. errors in the biggest measured floods) and more stable between samples. Fitted distributions let you estimate AEPs <b>beyond the observed range</b> (2022 Q5 True).</p>`},
+
+{t:"11 · Infiltration",s:"Hydrology · 2024 Q5 · Tut 3",h:`
+<div class="f">Infiltration capacity f_p = max rate soil can accept (function of soil only, falls with time to K_s)
+Actual infiltration = min(rain rate, capacity). Ponding/runoff starts when rain &gt; capacity.
+Horton:  f = f_c + (f₀ − f_c) e^(−kt)
+Green–Ampt:  F = Kt + ψΔθ ln(1 + F/(ψΔθ))   (iterate; start F = √(2ψΔθKt))
+             f = K(1 + ψΔθ/F)       ponding time t_p = Kψ Δθ / [i (i − K)]
+Δθ = (1 − s_e) θ_e</div>
+<div class="f">2024 Q5: read the potential infiltration curve where it drops to 60 mm/h → about 2 min → (c)
+Tut 3 Q4: loam K = 0.34 cm/h, ψΔθ = 3.858 cm, i = 2.1 cm/h → t_p = 1.31/3.70 = 0.355 h = 21 min</div>
+<p>Infiltration-excess (Horton) runoff: rain intensity beats capacity. Saturation-excess: soil fills up from below (shallow water table or impermeable layer). AWBM represents saturation excess only. "Infiltration capacity can't be determined before runoff starts" because until ponding you only know the supply rate.</p>`},
+
+{t:"12 · Measurement, groundwater and model calibration (MCQ theory)",s:"Hydrology · not in 2022–24 papers, taught in 2026 · Tut 4, 9, 10",h:`
+<h3>Streamflow & rainfall measurement</h3>
+<div class="f">Velocity–area method: q_i = b_i × ȳ_i × v̄_i (v at 0.6 depth); Q = Σq_i
+Good practice: no segment should carry more than 10% of the flow
+First-order error: if only v has 5% error, each q_i has 5% → σ_Q = √Σ(0.05 q_i)²
+Stage–discharge (rating) curve: relates water level to Q at a gauge (needs a stable control)
+Mean areal rain: arithmetic mean, or Thiessen polygons (area-weighted)</div>
+<ul><li>Pluviometer = recording gauge (rate over time), e.g. tipping bucket. Most Australian gauges are <b>manual daily</b> gauges, not pluviometers.</li>
+<li>Radar Z depends on drop number, drop size and precipitation type. S-band (longest λ) sees through storms and reaches 250 km+ (Brisbane uses it); X-band is accurate at short range.</li></ul>
+<h3>Groundwater</h3>
+<div class="f">Darcy:  Q = −K A (dh/dl)        Transmissivity T = K b
+Layers parallel to flow (horizontal): K_h = Σ K_i b_i / Σ b_i      (dominated by the most permeable)
+Layers in series (vertical flow):     K_v = Σ b_i / Σ(b_i / K_i)   (dominated by the least permeable)
+Confined aquifer: piezometric surface is linear between wells
+Tut 10: K = 0.7 m/d, A = 50 × 500, Δh = 8 m over 1,400 m → Q = 100 m³/d</div>
+<h3>Model types and calibration</h3>
+<ul><li>Empirical (rational, unit hydrograph) → conceptual (RORB, AWBM: stores with calibrated parameters) → physically-based (PDE, measurable parameters, expensive).</li>
+<li>Event models (RORB) produce a flood hydrograph; continuous models (AWBM) produce long flow series; peak models (rational) produce just Q<sub>peak</sub>.</li>
+<li>AWBM: three soil stores (saturation excess), baseflow index BFI, recession constants K = e<sup>−Δt/k</sup>.</li>
+<li>Skill scores: <b>NSE</b> = 1 − Σ(O−S)²/Σ(O−Ō)² (1 = perfect, ≤ 0 = no better than the mean); <b>RMSE</b> (units of flow, 0 perfect); <b>PBIAS</b> (volume bias %, 0 perfect); <b>R²</b> (correlation only, blind to bias). Calibrate volumes first (soil store parameters), then peaks (k<sub>s</sub>, BFI). Use a warm-up period; validate on separate data.</li></ul>`}
+];
+$("#lessons").innerHTML=LESSONS.map(l=>`<details class="mod"${l.open?" open":""}><summary><span class="ttl"><h3>${l.t}</h3><span>${l.s}</span></span></summary><div class="body">${l.h}</div></details>`).join("");
+
+/* ---------- open-book pack ---------- */
+const PACK=[
+["A · Free-surface flow: energy",`H = z + y + V²/2g        E = y + q²/(2g y²)  [rect]      E = y + Q²/(2g A²)  [any]
+Short transition, no loss: E₂ = E₁ − Δz   (Δz = bed rise)
+y꜀ = (q²/g)^⅓   E_min = 1.5y꜀   V꜀ = √(g y꜀)   Fr = V/√(g y)  [rect]   Fr = V/√(gA/B) [any]
+Critical any shape: Q²B/(gA³) = 1     Triangle 1V:mH: y꜀ = (2Q²/(g m²))^⅕
+q_max for given E: √(g(2E/3)³)
+CHOKE TEST: if E₂ &lt; E_min,2 → y₂ = y꜀₂ and E₁,new = E_min,2 + Δz → afflux = y₁,new − y₁
+Broad-crested weir: E_up = Δz_crest + 1.5y꜀ ;  downstream (no tailwater) = supercritical root
+Sub root:   y ← E − q²/(2g y²)   (start y = E)        Super root: y ← q/√(2g(E − y))  (start y = 0)
+Sub = controlled from downstream · Super = from upstream · critical section = control`],
+["B · Momentum",`Per metre width, CV from 1 (up) to 2 (down), F = structure on water (+ upstream):
+   F = ½ρg(y₁² − y₂²) − ρq(V₂ − V₁)      water on structure: + = downstream.  Total = F × B
+Sluice: energy for y₂ (no loss), then momentum for F.   Hydrostatic thrust ½ρgy² acts at y/3
+Jump: y₂/y₁ = ½(√(1+8Fr₁²) − 1)   y₁/y₂ = ½(√(1+8Fr₂²) − 1)   ΔE = (y₂ − y₁)³/(4y₁y₂)
+Power P = ρgQΔE (W)   Jump: Fr₁ 1–1.7 undular, 4.5–9 steady, &gt;9 strong
+Surge: c − v = ±√(gy)
+Sketch: CV between hydrostatic sections; ½ρgy₁², ½ρgy₂², F, weight + bed reaction; friction neglected`],
+["C · Friction & uniform flow",`τ₀ = ρgRS_f (GVF: use S_f, not S₀)   R = A/P   D_H = 4R
+Manning V = R^⅔ S^½ / n    S_f = V²n²/R^(4/3)    Chézy V = C√(RS), C = R^(1/6)/n
+Darcy S_f = fV²/(2g D_H)  → V = √(2g D_H S₀/f)    τ₀ = fρV²/8
+Rough: 1/√f = 2log(D_H/k_s) + 1.14     Colebrook: 1/√f = −2log(k_s/(3.71D_H) + 2.51/(Re√f))
+Re = V D_H/ν, ν = 1.0×10⁻⁶ m²/s.   Wide rect Manning: yₙ = (qn/√S₀)^0.6
+Rect A = By, P = B + 2y · Trapezoid (mH:1V) A = (B + my)y, P = B + 2y√(1+m²)
+Triangle A = my², P = 2y√(1+m²) · Semicircle r: A = πr²/2, P = πr
+Compound: split with vertical lines (not wetted), same S, Q = ΣQᵢ, iterate depth`],
+["D · Profiles",`dy/dx = (S₀ − S_f)/(1 − Fr²)
+Mild yₙ &gt; y꜀: M1 (y&gt;yₙ, rises) M2 (between, falls) M3 (y&lt;y꜀, rises)
+Steep yₙ &lt; y꜀: S1 (y&gt;y꜀, rises) S2 (between, falls to yₙ) S3 (y&lt;yₙ, rises to yₙ)
+Horizontal: H2 (y&gt;y꜀ falls), H3 (y&lt;y꜀ rises). Adverse: A2, A3
+Controls: free overfall / mild→steep → y꜀; long reach → yₙ; gates/weirs
+Jump where sequent depths match. Step: y(x−Δx) = y(x) − Δx·dy/dx (backwater)`],
+["E · Scale models (Froude, N = L_p/L_m)",`Length N · Area N² · Vol N³ · Velocity N^½ · Time N^½ · Q N^(5/2) · q N^(3/2)
+Force N³ · Pressure N · Head loss N · Power N^(7/2) · Re N^(3/2)
+Q_m = Q_p / N^2.5        N_min = (Q_p/Q_m,max)^0.4
+Turbulent model: Re_m = V D_H/ν &gt; 1×10⁵ (≈ 4q/ν wide); depths &gt; 30–50 mm`],
+["F · Water balance & evaporation",`ΔS = (ΣI − ΣQ)Δt     T_r = S/Q_out     S ≥ 0 and ≤ capacity
+1 ML = 1000 m³ · 1 mm on 1 km² = 1 ML · 1 mm on 1 ha = 10 m³ · 1 m³/s·day = 86.4 ML · 1 kg on 1 m² = 1 mm
+Lysimeter: ET = P − D − ΔS (depths over area; gain = +ΔS)
+Energy: E = R_n/(λρ_w), λ = 2.50025 − 0.002365T MJ/kg ; W/m² × 86400 = J/m²/d
+Aero: E = B(e_s − e_a), B = 0.102u/[ln(z/z₀)]² (mm/d/Pa) ; e_s = 0.6108exp(17.27T/(T+237.3)) kPa ; e_a = RH·e_s
+Combo: E = Δ/(Δ+γ)E_r + γ/(Δ+γ)E_a ; Δ = 4098e_s/(237.3+T)² (Pa/°C) ; γ = 66.8 Pa/°C
+Pan: E = K·E_pan, K ≈ 0.7`],
+["G · Rainfall–runoff",`Direct runoff V = Σ(Q − Q_b)Δt ; depth = V/A ; loss = P − depth ; % = loss/P
+Runoff coeff = runoff/rain. Temporal pattern = cum % time vs cum % rain
+Front/middle/back-loaded = which third of the duration holds most rain / the peak burst
+Rational: Q = CIA/360 (ha) = CIA/3.6 (km²); I at duration t꜀ & design AEP
+IFD table here = TOTAL mm → I = depth/duration; interpolate missing durations
+Rational valid: small urban (&lt;5 km² QUDM), uniform rain/losses, duration ≥ t꜀, no storage`],
+["H · Routing",`dS/dt = I − Q.  RORB S = kQ^m.  SLR (m = 1): dq/dt = (i − q)/k, k ≈ t꜀
+Exact: q₂ = i + (q₁ − i)e^(−Δt/k)   Euler: q₂ = q₁ + (Δt/k)(i − q₁)
+MEM: q₂(1 + Δt/2k) = q₁(1 − Δt/2k) + (Δt/k)ī       Q(m³/s) = q(mm/h)·A(km²)/3.6
+Level pool: Q = f(S) only. Weir Q = CLh^1.5, S = Ah (or 1.1Ah) → Q = CL(S/A)^1.5
+MEM reservoir: S₂ + (Δt/2)Q₂ = S₁ + (Δt/2)(I₁ + I₂) − (Δt/2)Q₁ ; peak Q where Q crosses falling I
+Muskingum: S = K[XI + (1−X)Q] ; Q₂ = C₁I₂ + C₂I₁ + C₃Q₁ ; D = 2K(1−X) + Δt
+C₁ = (Δt − 2KX)/D  C₂ = (Δt + 2KX)/D  C₃ = (2K(1−X) − Δt)/D  ΣC = 1
+K = L/c, c = 1.7V ; X 0–0.5 (≈0.2 natural) ; X = ½[1 − Q/(BS₀Lc)]
+Δt ≤ rise time/6 ; 2KX ≤ Δt ≤ 2K(1−X) ; outflow peak lower & later ; ΣQ = ΣI`],
+["I · Probability",`AEP = P(≥ in a year) ; ARI ≈ 1/AEP (exact −1/ln(1−AEP)) ; 50% AEP = 1.44 yr, 20% = 4.48 yr
+Risk in n yr: 1 − (1 − AEP)ⁿ ; binomial P(k) = C(n,k)pᵏ(1−p)ⁿ⁻ᵏ ; P(≤1) = (1−p)ⁿ + np(1−p)ⁿ⁻¹
+AMS: one max per WATER year, rank r = 1 largest
+Weibull r/(N+1) · Gringorten (r − 0.44)/(N + 0.12) · relative r/N
+Gumbel F = exp{−exp[−(x−α)/β]}, β = 0.78σ, α = μ − 0.5772β, x = α − β ln(−lnF), AEP = 1 − F`],
+["J · Infiltration, groundwater, measurement",`Horton f = f_c + (f₀ − f_c)e^(−kt) ; Green–Ampt F = Kt + ψΔθ ln(1 + F/ψΔθ) ; t_p = KψΔθ/[i(i − K)]
+Darcy Q = −KA dh/dl ; T = Kb ; K_h = ΣKᵢbᵢ/Σbᵢ ; K_v = Σbᵢ/Σ(bᵢ/Kᵢ)
+Velocity–area: Q = Σ bᵢȳᵢv̄ᵢ (v at 0.6 depth), ≤10% of Q per segment
+NSE = 1 − Σ(O−S)²/Σ(O−Ō)² ; RMSE ; PBIAS = 100Σ(O−S)/ΣO`]
+];
+$("#pack").innerHTML=PACK.map(p=>`<div class="card packcard"><h3>${p[0]}</h3><div class="f">${p[1]}</div></div>`).join("")+
+`<div class="card packcard"><h3>K · Exam-room checklist</h3><ul>
+<li>Units first: ha vs km², mm vs m, ML vs m³, h vs s, total depth vs intensity.</li>
+<li>FSF: q at each section → E → y꜀ & E<sub>min</sub> → choke test → right root → controls.</li>
+<li>Forces: say which body the force acts on and which way; multiply by width.</li>
+<li>Sketch: bed, yₙ & y꜀ dashed, controls, profile names, flow arrow, units.</li>
+<li>Checking a model table: recompute two rows, check units, sum coefficients, mass balance, Δt vs k, physical sense.</li>
+<li>State assumptions: hydrostatic, no losses, α = β = 1, steady, uniform rain, constant baseflow, independence, stationarity.</li></ul></div>`;
+$("#printPack").addEventListener("click",()=>window.print());
+
+/* ---------- MCQ bank ---------- */
+const TF=["True","False"];
+const CONTRA22="<br><span class='cap'>Tailrace contraction: rectangular, smooth, horizontal at 1 and 3. B₁ = 22, B₂ = 18, B₃ = 25 m. Bed levels 75.0, 77.7, 75.2 m AHD. V₃ = 0.61 m/s, d₃ = 6.1 m. Hydrostatic at 1, 2, 3. Don't assume a broad-crested weir.</span>";
+const SLUICE23="<br><span class='cap'>Vertical sluice gate, smooth horizontal rectangular channel 18 m wide, Q_max = 224 m³/s. 42:1 lab model. Model: d₁ = 0.200 m, d₂ = 0.012 m.</span>";
+const TRI23="<br><span class='cap'>Triangular canal, 1V:3.5H sides, Q = 28.6 m³/s, S₀ = 8.5 m/km, k_s ≈ 2 mm, gradually varied flow with depth 1.05 m at the gauge.</span>";
+const Q=[
+/* 2022 */
+{s:"X22",n:"Q1",tp:"Water balance",q:"When performing a water balance on a catchment, evaporation is often considered an inflow to the system depending on the specific characteristics of the catchment.",o:TF,a:1,w:"Evaporation is always an outflow. (The 2023 version says evapotranspiration; same answer.)"},
+{s:"X22",n:"Q2",tp:"Rainfall-runoff",q:"A total rainfall hyetograph presents a time-series of total catchment discharge, including the baseflow component, from a given storm event.",o:TF,a:1,w:"A hyetograph is rainfall (depth or intensity) vs time. Discharge vs time is a hydrograph."},
+{s:"X22",n:"Q3",tp:"Rainfall-runoff",q:"A direct runoff hydrograph presents a time-series of total catchment discharge, including the baseflow component, from a given storm event.",o:TF,a:1,w:"Direct runoff = total flow minus baseflow. It excludes baseflow."},
+{s:"X22",n:"Q4",tp:"Rainfall-runoff",q:"Compared with its natural state, an urbanised catchment without WSUD will typically generate a smaller volume of direct runoff from a given storm and it will appear more slowly at the outlet giving a more 'flashy' hydrograph.",o:TF,a:1,w:"Urbanisation gives a LARGER volume that arrives FASTER (higher, earlier peak). Two errors in one statement."},
+{s:"X22",n:"Q5",tp:"Risk",q:"In deriving hydrological statistics, the use of probability density functions, such as the Extreme Value Type 1 function, allows the frequency of extreme events that are out of the range of observations to be estimated.",o:TF,a:0,w:"That's the point of fitting a distribution: plotting positions can't go beyond the observed range, a fitted cdf can (with caution)."},
+{s:"X22",n:"Q6",tp:"Water balance",q:"Lake initially stores 60,000 m³. It receives 60 ML inflow; predicted losses (consumption + evaporation) are 130 ML over the same period. Amount stored (closest)?",o:["−100 ML","−10 ML","10 ML","> 100 ML","0 ML"],a:4,w:"60 ML + 60 − 130 = −10 ML, but storage can't be negative, so the lake is empty: 0 ML. The −10 ML option is the trap. Comment that the predicted losses can't all occur."},
+{s:"X22",n:"Q7",tp:"Rainfall-runoff",q:"10.0 km² catchment, uniform steady rain 6.0 mm/h for 3 h, initial loss 12 mm, no continuing loss. Direct runoff volume (closest)?",o:["< 10 ML","60 ML","120 ML","180 ML","> 200 ML"],a:1,w:"Rain 18 mm − 12 = 6 mm excess. 6 mm × 10 km² = 6 × 10 ML = 60 ML (1 mm on 1 km² = 1 ML)."},
+{s:"X22",n:"Q8",tp:"Water balance",q:"A lysimeter gains 20 kg over 24 h, area 1 m². Rain 48 mm, drainage 0.012 m³. Average ET rate (closest)?",o:["< 0.10 mm/h","0.44 mm/h","0.66 mm/h","8.00 mm/h","16.0 mm/h"],a:2,w:"ΔS = +20 mm, D = 12 mm. ET = 48 − 12 − 20 = 16 mm per 24 h = 0.67 mm/h. (16.0 is the total, not the rate.)"},
+{s:"X22",n:"Q9",tp:"Rainfall-runoff",q:"From the St Lucia IFD table (total rainfall in mm), the average intensity for AEP 0.10 and duration 9 h (closest)?",o:["145.0 mm/h","129.0 mm/h","113.0 mm/h","14.3 mm/h","1.4 mm/h"],a:3,w:"9 h isn't tabulated: interpolate 6 h (113 mm) and 12 h (145 mm) → 129 mm. Intensity = 129/9 = 14.3 mm/h. 145, 129 and 113 are depths."},
+{s:"X22",n:"Q10",tp:"Risk",q:"Design life 50 years; probability the design flood is equalled or exceeded during the design life is 63.58%. AEP of the design flood?",o:["1 in 50","1 in 100","1 in 120","1 in 140","1 in 200"],a:0,w:"1 − (1 − p)⁵⁰ = 0.6358 → (1 − p) = 0.3642^(1/50) = 0.980 → p = 0.02 = 1 in 50. (Nice fact: an n-year design over n years has ≈63% risk.)"},
+{s:"X22",n:"Q11",tp:"Energy",q:"Maximum unit discharge for the specific energy observed at section 3? [4 marks]"+CONTRA22,o:["25.8 m²/s","3.7 m²/s","5.2 m²/s","4.2 m²/s","93 m³/s"],a:0,w:"E₃ = 6.1 + 0.61²/19.62 = 6.119 m. q_max occurs at critical: y꜀ = 2E/3 = 4.079 → q = √(g y꜀³) = 25.8 m²/s. (3.7 is the actual q₃; 93 is Q.)"},
+{s:"X22",n:"Q12",tp:"Energy",q:"From where are the flow conditions at section 3 controlled? [3 marks]"+CONTRA22,o:["Upstream","Section 2","Neither","Section 1","Downstream"],a:4,w:"Fr₃ = 0.61/√(9.81×6.1) = 0.08, subcritical, so it's controlled from downstream."},
+{s:"X22",n:"Q13",tp:"Energy",q:"Flow depth at section 2? [5 marks]"+CONTRA22,o:["6.12 m","3.51 m","1.40 m","0.68 m","3.62 m"],a:1,w:"Q = 0.61 × 6.1 × 25 = 93.0 m³/s. H = 75.2 + 6.119 = 81.319 → E₂ = 81.319 − 77.7 = 3.619. q₂ = 5.168, y꜀₂ = 1.396, E_min = 2.09 &lt; 3.62 so no choke. Subcritical root: y₂ = 3.51 m. (1.40 is y꜀; 3.62 is E.)"},
+{s:"X22",n:"Q14",tp:"Energy",q:"From where are the flow conditions at section 2 controlled? [3 marks]"+CONTRA22,o:["Neither","Section 1","Upstream","Downstream","Section 2"],a:3,w:"y₂ = 3.51 &gt; y꜀ = 1.40, so it's subcritical and not choked: controlled from downstream. It would only be a control (section 2) if it went critical."},
+{s:"X22",n:"Q15",tp:"Energy",q:"Flow velocity at section 1? [5 marks]"+CONTRA22,o:["3.46 m/s","0.67 m/s","0.61 m/s","10.78 m/s","1.47 m/s"],a:1,w:"E₁ = 81.319 − 75.0 = 6.319. q₁ = 93.0/22 = 4.228. Subcritical root y₁ = 6.296 m → V₁ = 4.228/6.296 = 0.67 m/s."},
+{s:"X22",n:"Q16",tp:"Energy",q:"Critical flow depth at section 1? [4 marks]"+CONTRA22,o:["1.22 m","6.10 m","1.12 m","1.40 m","0.39 m"],a:0,w:"y꜀₁ = (4.228²/9.81)^(1/3) = 1.22 m. (1.40 is section 2's y꜀.)"},
+/* 2023 */
+{s:"X23",n:"MCQ1",tp:"Energy",q:"What is the model discharge? [5 marks]"+SLUICE23,o:["0.0101 m³/s","0.0101 m²/s","0.0099 m³/s","0.0287 m³/s","0.125 m³/s"],a:2,w:"Energy across the gate: 0.2 + q²/(2g·0.2²) = 0.012 + q²/(2g·0.012²) → q² = 0.188×19.62/(6944.4 − 25) → q = 0.02309 m²/s. Model width = 18/42 = 0.4286 m → Q = 0.0099 m³/s."},
+{s:"X23",n:"MCQ2",tp:"Scaling",q:"Corresponding prototype discharge? [4 marks]"+SLUICE23,o:["17.46 m³/s","2.69 m³/s","43.5 m³/s","113.2 m³/s","68.12 m³/s"],a:3,w:"Q_p = Q_m N^2.5 = 0.009895 × 42^2.5 (= 11,432) = 113.1 m³/s."},
+{s:"X23",n:"MCQ3",tp:"Scaling",q:"Which comment on the model flow conditions / scale effects is UNTRUE? [4 marks]"+SLUICE23,o:["Turbulent; model can be extrapolated with minimum scale effects","Model can be built in PVC","Model is 429 mm wide","The model flow conditions are laminar","Lab discharge can be supplied in the UQ AEB lab"],a:3,w:"Re = V D_H/ν ≈ 1.92 × 0.045/10⁻⁶ ≈ 9×10⁴ (or 4q/ν = 9.2×10⁴): turbulent, not laminar. Width 18/42 = 0.429 m is true; 10 L/s is easy for the lab; PVC is fine (smooth)."},
+{s:"X23",n:"MCQ4",tp:"Momentum",q:"Prototype: d₁ = 32 m, q = 12.44 m²/s. Magnitude of the force on the gate? [5 marks]"+SLUICE23,o:["12,980 N","1.1 kN","985 kN","7.8 MN","85 MN"],a:4,w:"Energy: E = 32.008 → supercritical d₂ = 0.500 m, V₂ = 24.9 m/s. F = ½ρg(32² − 0.5²) − ρq(V₂ − V₁) = 5.02 − 0.30 = 4.72 MN/m × 18 m = 85 MN."},
+{s:"X23",n:"MCQ5",tp:"Momentum",q:"Direction of the hydrodynamic force on the prototype gate? [2 marks]",o:["Upwards","Downwards","Downstream","Zero force","Upstream"],a:2,w:"The gate holds back the deep upstream water: the water pushes the gate downstream (and the gate pushes the water upstream)."},
+{s:"X23",n:"MCQ6",tp:"Scaling",q:"Scaling ratio for forces (prototype/model) for a 42:1 Froude model? [3 marks]",o:["6.48","42","272.2","1,764","74,088"],a:4,w:"Force scales as N³ (ρ × L³ × acceleration, with g the same) = 42³ = 74,088. (6.48 = √42 velocity; 1,764 = N² area.)"},
+{s:"X23",n:"MCQ7",tp:"Uniform flow",q:"Cross-sectional average boundary shear stress at the gauging station? [4 marks]"+TRI23,o:["1.56 Pa","0.157 Pa","15.8 Pa","134 Pa","256.1 Pa"],a:3,w:"A = 3.5(1.05)² = 3.859, P = 2(1.05)√(1+3.5²) = 7.644, R = 0.505, V = 7.41 m/s, D_H = 2.02. f ≈ 0.0196 (Colebrook). S_f = fV²/(2gD_H) = 0.0272 → τ₀ = ρgRS_f = 134 Pa. Use S_f, not S₀ (GVF)."},
+{s:"X23",n:"MCQ8",tp:"Energy",q:"Critical flow depth? [5 marks]"+TRI23,o:["1.32 m","0.885 m","1.140 m","1.69 m","1.05 m"],a:3,w:"Q²B/(gA³) = 1 with A = 3.5y², B = 7y → y꜀ = (2Q²/(g·3.5²))^(1/5) = (13.61)^(0.2) = 1.69 m. So the gauged 1.05 m is supercritical."},
+{s:"X23",n:"MCQ9",tp:"Uniform flow",q:"Uniform equilibrium (normal) depth? [5 marks]"+TRI23,o:["2.89 m","1.97 m","3.78 m","1.31 m","1.70 m"],a:3,w:"Find y where S_f = S₀ = 0.0085. At 1.31 m: A = 6.01, V = 4.76, R = 0.630, f = 0.0186 → S_f = 0.0085 ✓. Since yₙ = 1.31 &lt; y꜀ = 1.69 the slope is STEEP."},
+{s:"X23",n:"Q10",tp:"Water balance",q:"When performing a water balance on a catchment, evapotranspiration is often considered an inflow to the system depending on the specific characteristics of the catchment.",o:TF,a:1,w:"ET is an outflow."},
+{s:"X23",n:"Q11",tp:"Water balance",q:"A stage-discharge curve for a water supply reservoir is a graph that presents a time-series of the volumetric flow rate through the reservoir's outflow structure during a specific storm event.",o:TF,a:1,w:"A stage–discharge (rating) curve relates water LEVEL to DISCHARGE. It has no time axis. (Also 2024 Q1.)"},
+{s:"X23",n:"Q12",tp:"Water balance",q:"When performing a water balance on a catchment over a 24-hour period, the groundwater inflows and outflows can be ignored as they are often < 1.0 m³/s.",o:TF,a:1,w:"1 m³/s over a day is 86.4 ML, far from negligible, and you can't assume the size anyway. (Also 2024 Q2.)"},
+{s:"X23",n:"Q13",tp:"Rainfall-runoff",q:"From the St Lucia IFD table (total mm), average intensity for AEP 1 in 20 years and duration 30 min (closest)?",o:["< 45 mm/h","56.9 mm/h","84.0 mm/h","113.8 mm/h","> 120 mm/h"],a:3,w:"1 in 20 = 5% AEP. 30 min total = 56.9 mm → intensity = 56.9/0.5 h = 113.8 mm/h. (56.9 is the depth trap.)"},
+{s:"X23",n:"Q14",tp:"Rainfall-runoff",q:"Rational method: AEP 1 in 50, A = 7.0 km², t꜀ = 15 min, C = 0.8. Peak flow using the same IFD table?",o:["< 10.1 m³/s","47.3 m³/s","73.6 m³/s","294.3 m³/s","> 350 m³/s"],a:3,w:"2% AEP, 15 min = 47.3 mm → I = 189.2 mm/h. Q = CIA/360 = 0.8 × 189.2 × 700 ha / 360 = 294 m³/s."},
+{s:"X23",n:"Q15",tp:"Water balance",q:"A lysimeter LOSES 16 kg over 12 h, area 2 m². Rain 24.0 mm, drainage 0.012 m³. Average ET rate?",o:["1.08 mm","2.17 mm/h","12.3 mm/h","26.0 mm/h","52.0 mm"],a:1,w:"ΔS = −16 kg/2 m² = −8 mm; D = 0.012/2 = 6 mm. ET = 24 − 6 − (−8) = 26 mm over 12 h = 2.17 mm/h."},
+{s:"X23",n:"Q16",tp:"Rainfall-runoff",q:"4.00 km² catchment; gauge recorded 842.4 ML total outflow from a 36-h event at 9 mm/h. Constant baseflow 0.5 m³/s. Total rainfall loss (closest)?",o:["< 1.0 mm","10.0 mm","16.2 mm","129.6 mm","324.0 mm"],a:3,w:"Rain = 324 mm. Baseflow = 0.5 × 36 × 3600 = 64,800 m³ = 64.8 ML. Direct = 777.6 ML = 777,600/4×10⁶ = 194.4 mm. Loss = 129.6 mm."},
+{s:"X23",n:"Q17",tp:"Risk",q:"Seasonal maxima over 5 water years (Spring/Summer/Autumn/Winter): Y1 660/4700/2900/1700; Y2 550/3200/4200/190; Y3 240/6050/3800/320; Y4 180/4000/3900/250; Y5 210/2900/3100/240. Rank of autumn year 5 in the annual maximum series?",o:["1","5","6","8","Not part of the AMS"],a:1,w:"AMS = one max per year: 4700, 4200, 6050, 4000, 3100 (Y5 autumn 3100 &gt; summer 2900). Ranked: 6050, 4700, 4200, 4000, 3100 → rank 5."},
+/* 2024 */
+{s:"X24",n:"Q3",tp:"Rainfall-runoff",q:"10.0 km², uniform 6.0 mm/h for 6 hours, initial loss 12 mm, no continuing loss. Direct runoff volume (closest)?",o:["< 10 ML","60 ML","120 ML","180 ML","> 200 ML"],a:4,w:"36 − 12 = 24 mm × 10 km² = 240 ML. (The 2022 version used 3 h → 60 ML. Read the duration!)"},
+{s:"X24",n:"Q4",tp:"Water balance",q:"Over 48 h a 4 m deep lake receives 24.5 MJ/m² net radiation. Water 17 °C, temperature unchanged, sensible heat neglected. E₀ (mm/d)? Cp = 0.00418 MJ/kg°C, λ = 2.45 MJ/kg, ρ = 1000.",o:["2.45","5.00","10.00","24.50","> 25.00"],a:1,w:"No temperature change → the storage term vanishes (Cp and depth are distractors). Per day R_n = 12.25 MJ/m². E = 12.25/(2.45 × 1000) = 0.005 m/d = 5.00 mm/d. (10.00 forgets the 48 h.)"},
+{s:"X24",n:"Q5",tp:"Infiltration",q:"The potential infiltration rate curve starts at ~160 mm/h and decays: ~75 mm/h at 1 min, ~60 mm/h at 2 min, ~38 mm/h at 5 min. Constant rain 60 mm/h. When does surface runoff start (closest)?",o:["< 1 minute","1 minute","2 minutes","> 5 minutes","Never"],a:2,w:"Runoff starts when infiltration capacity drops below the rain rate: f = 60 mm/h at about 2 minutes."},
+{s:"X24",n:"Q6",tp:"Risk",q:"140-year annual maximum record; a flood of 700 m³/s has ARI 20 years (no plotting-position correction). Its rank in the record?",o:["1","7","70","100","> 140"],a:1,w:"AEP = r/N = 1/20 → r = 140/20 = 7."},
+/* tutorials & lectures */
+{s:"T",n:"Tut 1 Q1",tp:"Water balance",q:"Which is NOT a water storage in the hydrological cycle?",o:["A lake","Soil moisture","Clouds","Infiltration","Both b and d"],a:3,w:"Infiltration is a flux (a process moving water), not a store."},
+{s:"T",n:"Tut 1 Q2",tp:"Water balance",q:"On a topographic map, contour lines represent:",o:["Points of equal elevation","Right-angle changes in elevation","Flow paths of surface water","Catchment boundary lines","None of the above"],a:0,w:"Contours join points of equal elevation. Catchment boundaries cross contours at right angles."},
+{s:"T",n:"Tut 1 Q8",tp:"Water balance",q:"In a catchment water balance, evaporation can be considered:",o:["An inflow","An outflow","Both, depending on the catchment","Flow through plant stems","Soil moisture storage"],a:1,w:"Always an outflow."},
+{s:"T",n:"Lect WB Q2",tp:"Water balance",q:"In a water budget for a lake, groundwater would be considered a component of the:",o:["Inflow","Outflow","Storage","Inflow and/or outflow depending on the lake system","All of the above"],a:3,w:"Groundwater can feed or drain a lake, depending on heads. Contrast with evaporation, which is always out."},
+{s:"T",n:"Lect WB",tp:"Water balance",q:"In which component of the hydrosphere would a pollutant discharge generally be most challenging to clean up?",o:["Groundwater, short residence time","Groundwater, long residence time","Streams, short residence time","Streams, long residence time","Snow, cold"],a:1,w:"Long residence time (T_r = S/Q) means slow flushing. Groundwater can take years to millennia."},
+{s:"T",n:"Tut 3 Q1",tp:"Infiltration",q:"The infiltration capacity at time t is:",o:["A function of soil properties AND rainfall intensity","A function of only the soil properties","The maximum infiltration rate at t for a given soil","Both a and c","Both b and c"],a:4,w:"Capacity is the unconstrained (max) rate and depends on soil properties, not on rain. The actual rate depends on rain."},
+{s:"T",n:"Tut 4 Q3",tp:"Measurement",q:"Which statement is INCORRECT?",o:["A pluviometer continuously records rainfall rate","Most operating rain gauges in Australia are pluviometers","A rain gauge measures only at a point","A tipping bucket is a common pluviometer"],a:1,w:"Most Australian gauges are manually read daily gauges."},
+{s:"T",n:"Tut 4 Q6",tp:"Measurement",q:"Which statement about weather radar is correct?",o:["C-band beats S-band and X-band at seeing storms behind storms","X-band is usually more accurate than C-band within 5 km","C-band uses longer wavelengths than S-band","Radar can't detect rain beyond 25 km"],a:1,w:"S-band has the longest wavelength (best penetration, 250 km+ range); X-band is accurate at short range."},
+{s:"T",n:"Tut 5 Q1",tp:"Rainfall-runoff",q:"15-min storm at 24 mm/h, initial loss 5 mm, t꜀ = 5 min. Runoff coefficient (closest)?",o:["0.167","0.167 mm/h","0.792","Can't be estimated","None"],a:0,w:"Rain = 24 × 0.25 = 6 mm. Runoff = 6 − 5 = 1 mm. C = 1/6 = 0.167 (dimensionless, so not 'mm/h')."},
+{s:"T",n:"Tut 5 Q2",tp:"Rainfall-runoff",q:"A = 0.4 km², I = 42 mm/h, Q_peak = 4.2 m³/s, duration > t꜀. Runoff coefficient?",o:["0.1","0.3 mm/h","0.7","0.9","Can't be estimated"],a:3,w:"C = 360Q/(IA) = 360 × 4.2/(42 × 40 ha) = 0.9."},
+{s:"T",n:"Tut 6 Q1",tp:"Routing",q:"The key assumption in level pool routing is:",o:["Storage is a function of inflow only","Storage is a function of outflow only","Storage is a linear function of inflow and outflow","Only wedge storage","None"],a:1,w:"Level pool: horizontal water surface, so S = f(Q) uniquely."},
+{s:"T",n:"Tut 6 Q2",tp:"Routing",q:"With Muskingum, if inflow and outflow hydrographs are overlain they intersect at:",o:["The inflow peak","The peak of storage","The outflow peak","a and b","a and c"],a:1,w:"dS/dt = I − Q = 0 at maximum storage. For Muskingum, max storage is between the inflow and outflow peaks."},
+{s:"T",n:"Tut 6 Q3",tp:"Routing",q:"With level pool routing, the inflow and outflow hydrographs intersect:",o:["Where inflow equals outflow","At the inflow peak","At the outflow peak","a and b","a and c"],a:4,w:"For a level pool, peak outflow happens at peak storage (Q = f(S)), which is where I = Q."},
+{s:"T",n:"Tut 6 Q4",tp:"Routing",q:"Two inflows to a node: Inflow 1 = 2,3,5,8,6,4,2… and Inflow 2 = 0,0,1,3,8,21,13… at t = 0,5,10,15,20,25,30 min. Outflow from the node?",o:["Remove baseflow of hydrograph 1","Peak 25 m³/s at t = 25 min","Peak 84 m³/s at t = 25 min","All of these","None"],a:1,w:"At a node, just add hydrographs at each time: t = 25 → 4 + 21 = 25 m³/s, the largest sum."},
+{s:"T",n:"Tut 2 Q1",tp:"Water balance",q:"Evapotranspiration refers to the transfer of water, as vapour, from near the Earth's surface to the atmosphere.",o:TF,a:0,w:"That's the definition (evaporation + transpiration, plus sublimation)."},
+/* written practice */
+{s:"T",n:"Practice",tp:"Energy",q:"Subcritical flow approaches a smooth upward step in the bed (no choke). The water surface over the step:",o:["Rises","Falls","Stays level","Jumps"],a:1,w:"E drops by Δz. On the subcritical branch, less E means less depth, by more than Δz, so the surface level drops. (Supercritical: the depth increases.)"},
+{s:"T",n:"Practice",tp:"Energy",q:"A bridge narrows a channel so that E₁ &lt; E_min at the throat. What happens?",o:["Depth at the throat goes negative","Flow chokes: critical at the throat and upstream depth rises (afflux)","Downstream depth rises","Nothing; energy is conserved"],a:1,w:"The throat goes critical and acts as a control, and the upstream water backs up until E₁ = E_min,throat (+ Δz)."},
+{s:"T",n:"Practice",tp:"Profiles",q:"Mild channel ending in a free overfall. Profile approaching the drop?",o:["M1","M2","M3","S2"],a:1,w:"Depth falls from yₙ to y꜀ at the brink: zone 2 drawdown, M2."},
+{s:"T",n:"Practice",tp:"Profiles",q:"Steep channel, flow emerging from under a sluice at depth below yₙ. Profile?",o:["S1","S2","S3","M3"],a:2,w:"y &lt; yₙ &lt; y꜀ is zone 3 on a steep slope. S3 rises towards yₙ."},
+{s:"T",n:"Practice",tp:"Momentum",q:"Measured tailwater depth after a jump is DEEPER than the computed sequent depth, with no structure present. What does this imply?",o:["The jump is stable","Net force pushes the jump upstream (unsteady)","Energy is created","The flow is critical"],a:1,w:"Downstream hydrostatic thrust exceeds the momentum balance, so the jump accelerates upstream (lecture jump example 2)."},
+{s:"T",n:"Practice",tp:"Scaling",q:"In a 1:25 Froude model, a 2 s time interval in the model corresponds in the prototype to:",o:["2 s","10 s","50 s","250 s"],a:1,w:"Time scales by N^½ = 5 → 10 s."},
+{s:"T",n:"Practice",tp:"Uniform flow",q:"In a compound channel calculation using the divided-channel method, the vertical interfaces between main channel and flood plain are:",o:["Included in the wetted perimeter of both","Included in the main channel only","Excluded from wetted perimeter","Given double roughness"],a:2,w:"They're imaginary water–water boundaries, not walls, so they're excluded from P (lecture)."}
+];
+const TOPICS=["all",...new Set(Q.map(q=>q.tp))];
+$("#qTopic").innerHTML=TOPICS.map(t=>`<option value="${t}">${t==="all"?"All topics":t}</option>`).join("");
+let onlyWrong=false;
+function renderQuiz(){const st=store.get("civl3155-quiz",{});const P=$("#qPaper").value,T=$("#qTopic").value;
+ const SRC={X22:"2022",X23:"2023",X24:"2024",T:"Tutorial/lecture"};
+ let list=Q.map((q,i)=>({...q,id:q.s+"-"+q.n+"-"+i})).filter(q=>(P==="all"||q.s===P)&&(T==="all"||q.tp===T));
+ if(onlyWrong)list=list.filter(q=>st[q.id]!=null&&st[q.id]!==q.a);
+ const answered=list.filter(q=>st[q.id]!=null),right=answered.filter(q=>st[q.id]===q.a).length;
+ $("#qScore").textContent=`${right}/${answered.length} right · ${list.length} shown`;
+ $("#quiz").innerHTML=list.length?list.map(q=>{const a=st[q.id];const done=a!=null;
+  return `<div class="card q" data-id="${q.id}"><div class="qh"><span class="qn">${SRC[q.s]} ${q.n}</span><span class="pill">${q.tp}</span></div><p>${q.q}</p><div class="opts">${q.o.map((o,k)=>`<button class="opt ${done&&k===q.a?"right":""} ${done&&k===a&&a!==q.a?"wrong":""}" data-k="${k}" ${done?"disabled":""}><span class="k">${String.fromCharCode(97+k)}</span><span>${o}</span></button>`).join("")}</div>${done?`<div class="why"><b>${a===q.a?"Correct.":"Answer: "+String.fromCharCode(97+q.a)+"."}</b> ${q.w}</div>`:""}</div>`}).join(""):`<div class="card"><p>Nothing to show${onlyWrong?": no misses in this filter yet.":"."}</p></div>`;
+ document.querySelectorAll("#quiz .opt").forEach(b=>b.addEventListener("click",()=>{const id=b.closest(".q").dataset.id;const s=store.get("civl3155-quiz",{});s[id]=+b.dataset.k;store.set("civl3155-quiz",s);const y=b.closest(".q").getBoundingClientRect().top;renderQuiz();const el=document.querySelector(`[data-id="${id}"]`);if(el)window.scrollBy(0,el.getBoundingClientRect().top-y)}));}
+["#qPaper","#qTopic"].forEach(s=>$(s).addEventListener("change",renderQuiz));
+$("#qWrong").addEventListener("click",()=>{onlyWrong=!onlyWrong;$("#qWrong").classList.toggle("primary",onlyWrong);$("#qWrong").classList.toggle("btn",true);renderQuiz()});
+$("#qReset").addEventListener("click",()=>{store.set("civl3155-quiz",{});renderQuiz()});
+renderQuiz();
+
+/* ---------- number drills ---------- */
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const Rf=(a,b,d=1)=>+(a+Math.random()*(b-a)).toFixed(d);
+const subR=(E,q)=>{let y=E;for(let i=0;i<300;i++)y=E-q*q/(2*G*y*y);return y};
+const supR=(E,q)=>{let y=0.001;for(let i=0;i<300;i++)y=q/Math.sqrt(2*G*(E-y));return y};
+function gen(sel,title,tag,make){const el=$(sel);let cur=null;
+ const draw=()=>{cur=make();el.innerHTML=`<div class="eyebrow">${tag}</div><h3>${title}</h3><p>${cur.q}</p><div class="qbar"><button class="btn primary" type="button">New problem</button><button class="btn" type="button">Show working</button></div><div class="ans" hidden>${cur.a}</div>`;
+  const [nb,sb]=el.querySelectorAll("button");nb.addEventListener("click",draw);sb.addEventListener("click",()=>{const a=el.querySelector(".ans");a.hidden=!a.hidden;sb.textContent=a.hidden?"Show working":"Hide working"})};
+ draw();}
+
+gen("#g-se","Contraction / step: depth or afflux","Drill 1 · Lesson 1 · 2024 Q7, 2022 Q13",()=>{
+ for(let t=0;t<500;t++){const B1=R(4,12),Q=R(10,60),y1=Rf(1.4,3.5,2),B2=Math.max(2,B1-R(1,4)),dz=Rf(0,0.5,2);
+  const q1=Q/B1,E1=y1+q1*q1/(2*G*y1*y1),Fr=q1/y1/Math.sqrt(G*y1);if(Fr>0.8)continue;
+  const q2=Q/B2,yc2=Math.cbrt(q2*q2/G),Em=1.5*yc2,E2=E1-dz;
+  let a=`q₁ = ${Q}/${B1} = ${fx(q1,3)} m²/s   E₁ = ${y1} + ${fx(q1,3)}²/(19.62×${y1}²) = ${fx(E1,3)} m   Fr₁ = ${fx(Fr)} (sub)
+q₂ = ${Q}/${B2} = ${fx(q2,3)} m²/s   y꜀₂ = (q₂²/g)^⅓ = ${fx(yc2,3)} m   E_min,2 = ${fx(Em,3)} m
+E₂ = E₁ − Δz = ${fx(E1,3)} − ${dz} = ${fx(E2,3)} m\n`;
+  if(E2>=Em){const y2=subR(E2,q2);a+=`E₂ ≥ E_min → no choke. Subcritical root: y₂ = ${fx(y2,3)} m  (V₂ = ${fx(q2/y2)} m/s)
+Water level change = (Δz + y₂) − y₁ = ${fx(dz+y2-y1,3)} m (the surface ${dz+y2<y1?"drops":"rises"})`;}
+  else{const E1n=Em+dz,y1n=subR(E1n,q1);a+=`E₂ &lt; E_min → CHOKE. Throat critical: y₂ = y꜀₂ = ${fx(yc2,3)} m
+Upstream energy must rise: E₁ = E_min,2 + Δz = ${fx(E1n,3)} m → new y₁ (sub root) = ${fx(y1n,3)} m
+Afflux = ${fx(y1n,3)} − ${y1} = ${fx(y1n-y1,3)} m`;}
+  return{q:`Rectangular horizontal channel, B₁ = ${B1} m, Q = ${Q} m³/s, upstream depth y₁ = ${y1} m. At a bridge the width reduces to ${B2} m${dz?` and the bed is raised by Δz = ${dz} m`:""}. Neglect losses. Find the depth under the bridge, or the afflux if it chokes.`,a}}});
+
+gen("#g-jump","Sluice gate: downstream depth, gate force, jump","Drill 2 · Lesson 2 · 2023 MCQ4, Tut 10",()=>{
+ const q=Rf(0.8,6,2),y1=Rf(Math.max(1.2,1.6*Math.cbrt(q*q/G)),6,2),B=R(3,20);
+ const E=y1+q*q/(2*G*y1*y1),yg=supR(E,q),V1=q/y1,V2=q/yg,F=0.5*1000*G*(y1*y1-yg*yg)-1000*q*(V2-V1);
+ const Fr=V2/Math.sqrt(G*yg),yj=yg/2*(Math.sqrt(1+8*Fr*Fr)-1),dE=Math.pow(yj-yg,3)/(4*yg*yj);
+ return{q:`A sluice gate spans a horizontal rectangular channel ${B} m wide. Upstream depth ${y1} m, q = ${q} m²/s. (a) depth just downstream of the gate (no loss), (b) total force on the gate and its direction, (c) sequent depth of a free jump downstream, (d) head loss and power lost in the jump.`,
+ a:`E = ${y1} + ${q}²/(19.62×${y1}²) = ${fx(E,4)} m
+(a) Super root y ← q/√(2g(E − y)):  y₂ = ${fx(yg,3)} m   V₁ = ${fx(V1,3)}  V₂ = ${fx(V2,3)} m/s
+(b) F = ½ρg(y₁² − y₂²) − ρq(V₂ − V₁)
+      = ${fx(0.5*1000*G*(y1*y1-yg*yg),0)} − ${fx(1000*q*(V2-V1),0)} = ${fx(F,0)} N/m
+    Total = ${fx(F*B/1000,1)} kN on the gate, acting DOWNSTREAM
+(c) Fr₂ = ${fx(Fr,2)} → y₃ = ½y₂(√(1 + 8Fr²) − 1) = ${fx(yj,3)} m
+(d) ΔE = (y₃ − y₂)³/(4y₂y₃) = ${fx(dE,3)} m   P = ρgQΔE = ${fx(1000*G*q*B*dE/1000,1)} kW`}});
+
+gen("#g-norm","Normal & critical depth, slope class, profile","Drill 3 · Lessons 3–4 · Tut 11, 2023 Q19",()=>{
+ const q=Rf(0.5,6,2),n=[0.012,0.015,0.02,0.025,0.03,0.035][R(0,5)],S=[0.0002,0.0005,0.001,0.002,0.005,0.01,0.02][R(0,6)];
+ const yn=Math.pow(q*n/Math.sqrt(S),0.6),yc=Math.cbrt(q*q/G),mild=yn>yc;const y=Rf(0.3*Math.min(yn,yc),1.6*Math.max(yn,yc),2);
+ let zone;if(mild)zone=y>yn?"M1 (rises in flow direction)":y>yc?"M2 (falls)":"M3 (rises towards a jump)";else zone=y>yc?"S1 (rises)":y>yn?"S2 (falls towards yₙ)":"S3 (rises towards yₙ)";
+ const Fr=q/y/Math.sqrt(G*y),Sf=Math.pow(q/y,2)*n*n/Math.pow(y,4/3);
+ return{q:`Wide rectangular channel, q = ${q} m²/s, Manning n = ${n}, S₀ = ${S}. Find yₙ and y꜀, classify the slope, and name the profile at a section where y = ${y} m. Also find dy/dx there and the bed shear stress at normal depth.`,
+ a:`yₙ = (qn/√S₀)^0.6 = (${q}×${n}/√${S})^0.6 = ${fx(yn,3)} m
+y꜀ = (q²/g)^⅓ = ${fx(yc,3)} m   →  ${mild?"yₙ > y꜀: MILD":"yₙ < y꜀: STEEP"}
+At y = ${y}: ${zone}
+S_f = q²n²/y^(10/3) = ${Sf.toExponential(3)}   Fr = ${fx(Fr,3)}
+dy/dx = (S₀ − S_f)/(1 − Fr²) = ${(((S-Sf)/(1-Fr*Fr))).toExponential(3)}
+τ₀ (normal) = ρ g yₙ S₀ = ${fx(1000*G*yn*S,2)} Pa`}});
+
+gen("#g-scale","Froude scale model","Drill 4 · Lesson 5 · 2024 Q7d, 2022 Q23",()=>{
+ const Qp=R(20,400),N=[10,12,15,20,25,30,40,42,50][R(0,8)],Bp=R(8,40),Qlim=[0.03,0.05,0.06,0.08,0.1][R(0,4)];
+ const Qm=Qp/Math.pow(N,2.5),Bm=Bp/N,qm=Qm/Bm,Re=4*qm/1e-6,Nmin=Math.pow(Qp/Qlim,0.4),Fp=R(2,60);
+ return{q:`Prototype spillway: Q = ${Qp} m³/s, width ${Bp} m. (a) Model discharge and width at 1:${N}. (b) Is the model turbulent (use Re = 4q/ν)? (c) A measured model force of ${Fp} N corresponds to what prototype force? (d) If the lab pump gives at most ${Qlim*1000} L/s, what is the minimum N?`,
+ a:`(a) Q_m = Q_p/N^2.5 = ${Qp}/${fx(Math.pow(N,2.5),1)} = ${fx(Qm,4)} m³/s   B_m = ${fx(Bm,3)} m
+(b) q_m = ${fx(qm,4)} m²/s → Re ≈ 4q/ν = ${Re.toExponential(2)}  ${Re>1e5?"> 10⁵: turbulent, scale effects small":"< 10⁵: friction scale effects likely; use a larger model"}
+(c) F_p = F_m N³ = ${Fp} × ${N**3} = ${fx(Fp*N**3/1000,1)} kN
+(d) N ≥ (Q_p/Q_m,max)^0.4 = (${Qp}/${Qlim})^0.4 = ${fx(Nmin,1)}`}});
+
+gen("#g-lys","Lysimeter evapotranspiration","Drill 5 · Lesson 6 · every paper",()=>{
+ let A,h,dm,P,Dv,dS,D,ET;
+ do{A=R(1,4);h=[12,24,48][R(0,2)];dm=R(-25,25)||5;P=R(10,60);Dv=Rf(0.002,0.02,3);dS=dm/A;D=Dv*1000/A;ET=P-D-dS}while(ET<=0.5);
+ return{q:`A lysimeter with surface area ${A} m² ${dm>0?"gains":"loses"} ${Math.abs(dm)} kg over ${h} h. It received ${P} mm of rain and ${Dv} m³ drained out. Find the average ET in mm/h and mm/d, and give each term as a volume (ρ = 1000 kg/m³).`,
+ a:`ΔS = ${dm} kg / (1000 × ${A}) = ${fx(dm/1000,3)} m³ = ${fx(dS,2)} mm
+D = ${Dv} m³ / ${A} m² = ${fx(D,2)} mm      P = ${P} mm = ${fx(P/1000*A,3)} m³
+ET = P − D − ΔS = ${P} − ${fx(D,2)} − (${fx(dS,2)}) = ${fx(ET,2)} mm in ${h} h
+   = ${fx(ET/h,3)} mm/h = ${fx(ET/h*24,2)} mm/d     (volume ${fx(ET/1000*A,4)} m³)`}});
+
+gen("#g-rr","Hydrograph → runoff depth, loss, loading","Drill 6 · Lesson 7 · 2022 Q17, 2023 Q22",()=>{
+ const A=Rf(2,15,2),qb=R(1,3),dt=0.5;const r=[R(2,20),R(2,25),R(2,20)];const peakPos=r.indexOf(Math.max(...r));
+ const tot=r[0]+r[1]+r[2];const runoffmm=tot*Rf(0.4,0.85,2);const V=runoffmm/1000*A*1e6;
+ const shape=[0,0,0.25,0.45,0.3,0,0];const sum=V/(dt*3600);const Qd=shape.map(s=>Math.round(s*sum));const Q=Qd.map(x=>x+qb);
+ const Vr=Qd.reduce((a,b)=>a+b,0)*dt*3600,dep=Vr/(A*1e6)*1000,loss=tot-dep;
+ const rows=[0,0.5,1,1.5,2,2.5,3].map((t,i)=>`${t.toFixed(1)} h   rain ${i>0&&i<4?r[i-1]:0} mm   Q ${Q[i]} m³/s`).join("\n");
+ return{q:`Catchment area ${A} km². Data:<div class="f">${rows}</div>Find the direct runoff depth (mm), the loss (mm and %), the loading, and the cumulative temporal pattern.`,
+ a:`Baseflow = ${qb} m³/s (start/end values). Direct = ${Qd.join(", ")} m³/s
+V = Σ(Q − Q_b) × 1800 s = ${Qd.reduce((a,b)=>a+b,0)} × 1800 = ${fx(Vr,0)} m³
+Depth = V/A = ${fx(Vr,0)}/${fx(A*1e6,0)} = ${fx(dep,1)} mm
+Rain = ${tot} mm → loss = ${fx(loss,1)} mm = ${fx(loss/tot*100,1)}% of rain
+Largest burst in the ${["first","middle","last"][peakPos]} third → ${["FRONT","MIDDLE","BACK"][peakPos]}-loaded
+Pattern: time 0/33.3/66.7/100%  rain 0/${fx(r[0]/tot*100,1)}/${fx((r[0]+r[1])/tot*100,1)}/100%`}});
+
+gen("#g-risk","AEP, ARI, risk over a design life","Drill 7 · Lesson 10 · 2022 Q10, Q18c",()=>{
+ const T=[5,10,20,50,100,200][R(0,5)],n=R(5,60),N=R(15,120),r=R(1,8),p=1/T,k=R(2,15);
+ const risk=1-Math.pow(1-p,n),P0=Math.pow(1-p,k),P1=k*p*Math.pow(1-p,k-1);
+ return{q:`(a) Risk that the 1-in-${T}-year flood is equalled or exceeded at least once in ${n} years. (b) Exact ARI for AEP = 1/${T}. (c) In a ${N}-year annual maximum series, the flood ranked ${r}: Weibull AEP and ARI. (d) Probability of at most one 1-in-${T} event in ${k} years (budget for one repair).`,
+ a:`(a) R = 1 − (1 − 1/${T})^${n} = ${fx(risk*100,1)}%
+(b) ARI = −1/ln(1 − ${fx(p,4)}) = ${fx(-1/Math.log(1-p),2)} yr
+(c) AEP = r/(N+1) = ${r}/${N+1} = ${fx(r/(N+1),4)} → 1 in ${fx((N+1)/r,1)} yr
+(d) P(0) = (1 − p)^${k} = ${fx(P0,4)};  P(1) = ${k}p(1 − p)^${k-1} = ${fx(P1,4)};  P(≤1) = ${fx(P0+P1,3)}`}});
+
+gen("#g-musk","Muskingum coefficients and checks","Drill 8 · Lesson 9 · 2023 Q21",()=>{
+ const L=Rf(5,40,1),V=Rf(0.5,2.5,2),X=[0.1,0.15,0.2,0.25,0.3][R(0,4)],rise=R(2,8),dtm=[15,30,60,120][R(0,3)];
+ const K=L*1000/(1.7*V)/60,D=2*K*(1-X)+dtm,C1=(dtm-2*K*X)/D,C2=(dtm+2*K*X)/D,C3=(2*K*(1-X)-dtm)/D;
+ return{q:`River reach ${L} km long, mean velocity ${V} m/s, X = ${X}. The inflow hydrograph rises to its peak in ${rise} h and you propose Δt = ${dtm} min. Find K, C₁–C₃, and judge Δt.`,
+ a:`c = 1.7V = ${fx(1.7*V,3)} m/s → K = L/c = ${fx(L*1000/(1.7*V),0)} s = ${fx(K,1)} min
+2KX = ${fx(2*K*X,1)}   2K(1 − X) = ${fx(2*K*(1-X),1)}   D = 2K(1−X) + Δt = ${fx(D,1)}
+C₁ = (Δt − 2KX)/D = ${fx(C1,3)}   C₂ = (Δt + 2KX)/D = ${fx(C2,3)}   C₃ = (2K(1−X) − Δt)/D = ${fx(C3,3)}   Σ = ${fx(C1+C2+C3,3)}
+Rise/6 = ${fx(rise*60/6,0)} min → Δt = ${dtm} min is ${dtm<=rise*10?"OK":"TOO COARSE"}${C1<0?"; C₁ < 0 (Δt < 2KX) → negative coefficient, outflow may dip below zero":""}${C3<0?"; C₃ < 0 (Δt > 2K(1−X)) → unstable":""}`}});
+
+/* ---------- past paper diagrams ---------- */
+const AR=`<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--crit)"/></marker></defs>`;
+const SVG_SLUICE=svgFrame(600,260,AR+`
+<line x1="20" y1="220" x2="580" y2="220" stroke="var(--ink)" stroke-width="2"/>
+<path d="M20 70 L250 70 C 262 90, 268 160, 290 195 C 320 205, 360 205, 580 205 L580 220 L20 220Z" fill="var(--accent)" opacity=".18"/>
+<path d="M20 70 L250 70 C 262 90, 268 160, 290 195 C 320 205, 360 205, 580 205" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<rect x="258" y="30" width="8" height="150" fill="var(--ink)"/><text x="270" y="44" font-size="12">gate</text>
+<rect x="80" y="62" width="420" height="160" fill="none" stroke="var(--muted)" stroke-dasharray="6 4"/><text x="84" y="56" font-size="12" fill="var(--muted)">control volume (sections where streamlines ∥ bed)</text>
+<path d="M80 70 L80 220 L140 220Z" fill="var(--crit)" opacity=".15"/><line x1="40" y1="170" x2="78" y2="170" stroke="var(--crit)" stroke-width="2.5" marker-end="url(#ah)"/><text x="24" y="160" font-size="12">½ρgy₁² at y₁/3</text>
+<path d="M500 205 L500 220 L512 220Z" fill="var(--crit)" opacity=".25"/><line x1="545" y1="214" x2="503" y2="214" stroke="var(--crit)" stroke-width="2.5" marker-end="url(#ah)"/><text x="508" y="196" font-size="12">½ρgy₂²</text>
+<line x1="300" y1="120" x2="255" y2="120" stroke="var(--crit)" stroke-width="2.5" marker-end="url(#ah)"/><text x="304" y="124" font-size="12">F (gate on water)</text>
+<line x1="380" y1="150" x2="380" y2="185" stroke="var(--crit)" stroke-width="2" marker-end="url(#ah)"/><text x="386" y="168" font-size="12">W</text>
+<line x1="420" y1="245" x2="420" y2="224" stroke="var(--crit)" stroke-width="2" marker-end="url(#ah)"/><text x="426" y="244" font-size="12">bed reaction</text>
+<text x="120" y="100" font-size="13">y₁ (subcritical)</text><text x="430" y="190" font-size="13">y₂ (super)</text><text x="20" y="250" font-size="12">flow →</text>`);
+const SVG_BASIN=svgFrame(600,260,AR+`
+<path d="M20 40 L120 200 L580 200" fill="none" stroke="var(--ink)" stroke-width="2"/>
+<path d="M28 40 L120 186 L210 186 C 240 150, 270 80, 330 72 L580 72 L580 200 L120 200Z" fill="var(--accent)" opacity=".18"/>
+<path d="M28 40 L120 186 L210 186 C 240 150, 270 80, 330 72 L580 72" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<path d="M235 150 q 20 -40 45 -20 q -20 25 -45 20" fill="none" stroke="var(--accent)" stroke-dasharray="3 3"/><text x="230" y="112" font-size="11">roller</text>
+<rect x="360" y="178" width="22" height="22" fill="var(--ink)"/><text x="350" y="172" font-size="12">baffle row</text>
+<rect x="150" y="64" width="350" height="138" fill="none" stroke="var(--muted)" stroke-dasharray="6 4"/>
+<line x1="110" y1="194" x2="148" y2="194" stroke="var(--crit)" stroke-width="2.5" marker-end="url(#ah)"/><text x="70" y="182" font-size="12">½ρgd₁²</text>
+<line x1="545" y1="160" x2="503" y2="160" stroke="var(--crit)" stroke-width="2.5" marker-end="url(#ah)"/><text x="508" y="150" font-size="12">½ρgd₂²</text>
+<line x1="420" y1="189" x2="386" y2="189" stroke="var(--crit)" stroke-width="2.5" marker-end="url(#ah)"/><text x="250" y="232" font-size="12">F_b = blocks on water (drawn upstream; the sign decides)</text>
+<line x1="300" y1="120" x2="300" y2="160" stroke="var(--crit)" stroke-width="2" marker-end="url(#ah)"/><text x="306" y="146" font-size="12">W (and bed reaction)</text>
+<text x="160" y="182" font-size="12">d₁ = 0.83, V₁ = 12.5</text><text x="420" y="92" font-size="12">d₂ = 6.94, V₂ = 1.5</text>`);
+const SVG_CONTRA=svgFrame(600,250,`
+<path d="M20 200 L210 200 L250 150 L350 150 L390 196 L580 196" fill="none" stroke="var(--ink)" stroke-width="2"/>
+<path d="M20 200 L210 200 L250 150 L350 150 L390 196 L580 196 L580 50 L390 50 C 360 52, 330 58, 300 58 C 270 58, 240 52, 210 50 L20 50Z" fill="var(--accent)" opacity=".18"/>
+<path d="M20 50 L210 50 C 240 52, 270 58, 300 58 C 330 58, 360 52, 390 50 L580 50" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<line x1="20" y1="80" x2="580" y2="80" stroke="var(--crit)" stroke-dasharray="3 4"/><text x="430" y="94" font-size="11" fill="var(--crit)">energy line H = 81.32 m AHD</text>
+<text x="40" y="44" font-size="12">WS 81.30</text><text x="262" y="74" font-size="12">WS 81.21 (dip)</text><text x="470" y="44" font-size="12">WS 81.30</text>
+<text x="40" y="220" font-size="12">1: bed 75.0, B 22 m, y 6.30, V 0.67</text><text x="230" y="140" font-size="12">2: bed 77.7, B 18, y 3.51</text><text x="380" y="220" font-size="12">3: bed 75.2, B 25, y 6.10, V 0.61</text>
+<text x="20" y="244" font-size="12">Subcritical throughout (Fr ≪ 1) → no critical flow, no jump. flow →</text>`);
+const SVG_TRI=svgFrame(600,240,`
+<path d="M60 40 L300 190 L540 40" fill="none" stroke="var(--ink)" stroke-width="2"/>
+<path d="M188 120 L300 190 L412 120Z" fill="var(--accent)" opacity=".25" stroke="var(--accent)"/>
+<line x1="150" y1="96" x2="450" y2="96" stroke="var(--crit)" stroke-dasharray="4 4"/><text x="478" y="92" font-size="12" fill="var(--crit)">y꜀ = 1.69 m</text>
+<line x1="170" y1="108" x2="430" y2="108" stroke="var(--ok)" stroke-dasharray="4 4"/><text x="478" y="112" font-size="12" fill="var(--ok)">yₙ = 1.31 m</text>
+<text x="430" y="140" font-size="12">water surface, y = 1.05 m</text>
+<text x="330" y="180" font-size="12">1V : 3.5H</text><line x1="300" y1="120" x2="300" y2="190" stroke="var(--ink)"/><text x="306" y="160" font-size="12">1.05</text>
+<text x="30" y="226" font-size="12">A = 3.86 m², P = 7.64 m, R = 0.505 m, V = 7.41 m/s, Fr = 3.27 (supercritical)</text>`);
+const SVG_S3=svgFrame(600,230,`
+<path d="M20 90 L580 200" stroke="var(--ink)" stroke-width="2" fill="none"/>
+<path d="M20 34 L580 144" stroke="var(--crit)" stroke-dasharray="5 4" fill="none"/><text x="470" y="116" font-size="12" fill="var(--crit)">y꜀ = 1.69</text>
+<path d="M20 48 L580 158" stroke="var(--ok)" stroke-dasharray="5 4" fill="none"/><text x="470" y="160" font-size="12" fill="var(--ok)">yₙ = 1.31</text>
+<path d="M150 98 C 260 120, 360 136, 560 156" stroke="var(--accent)" stroke-width="2.6" fill="none"/>
+<line x1="150" y1="60" x2="150" y2="116" stroke="var(--ink)"/><text x="110" y="54" font-size="12">gauging station y = 1.05</text>
+<text x="250" y="96" font-size="13" font-weight="600">S3: depth increases downstream, tends to yₙ</text>
+<text x="20" y="222" font-size="12">steep slope S₀ = 0.0085 · supercritical · controlled from upstream · flow →</text>`);
+
+/* ---------- worked solutions ---------- */
+const PAPERS={
+X24:[
+{t:"Part A Q1–6 · hydrology MCQs (10 marks)",h:`<div class="f">Q1 False (stage–discharge is a relationship, not a time series)
+Q2 False (groundwater can't be ignored)
+Q3 (e) > 200 ML: 6 h × 6 = 36 mm − 12 = 24 mm × 10 km² = 240 ML
+Q4 (b) 5.00 mm/d: 12.25 MJ/m²/d ÷ (2.45 MJ/kg × 1000 kg/m³)
+Q5 (c) 2 min: capacity curve crosses 60 mm/h
+Q6 (b) 7: r = N × AEP = 140/20</div><p>Full reasoning for each is in the MCQ drill (filter: 2024).</p>`},
+{t:"Q7a · Specific energy diagram (8 marks)",h:`<p>B = 5 m, Q = 20 m³/s, y₁ = 2 m, bridge width 4 m. Draw the two E–y curves (q = 4 and q = 5), mark y꜀ and E<sub>min</sub> for each, plot the three points. 1 and 3 coincide (same q, same E, same branch). Point 2 sits directly below on the q = 5 curve.</p>
+${eyPlot({curves:[{q:4,lab:"q = 4, B = 5"},{q:5,lab:"q = 5, B = 4"}],pts:[{E:2.204,y:2.0,lab:"1 & 3 (2.00 m)",dy:-6},{E:2.204,y:1.819,lab:"2 (1.82 m)",dy:16,c:"var(--crit)"}],Emax:4,ymax:3,Estep:0.5})}
+<p>Annotate: axes with units; the 45° E = y line; y꜀ = 1.18 m (q = 4) and 1.37 m (q = 5); E<sub>min</sub> = 1.77 and 2.05 m; upper limb subcritical, lower limb supercritical; the vertical line E = 2.204 m (constant E, horizontal bed, no losses).</p>`},
+{t:"Q7b · Depths d₂ and d₃ (6 marks)",h:`<div class="f">E₁ = 2 + 4²/(2g·2²) = 2.204 m      Fr₁ = 2/√(9.81·2) = 0.45 → subcritical
+Location 2: q = 5, y꜀ = 1.366, E_min = 2.049 &lt; 2.204 → no choke (matches "not critical")
+   y ← 2.204 − 25/(19.62y²) → 1.82 m. Take the subcritical root: flow can't cross y꜀ without a control.
+Location 3: q = 4, E = 2.204 → subcritical root = 2.00 m (= y₁, no losses assumed)</div>
+<p>Justify: horizontal bed, short transition so friction is negligible, so E is constant; hydrostatic pressure at each section; α = 1; subcritical upstream with no critical control in between, so the flow stays on the subcritical limb.</p>`},
+{t:"Q7c · Minimum width for afflux ≤ 0.4 m with Δz = 0.3 m (10 marks)",h:`<div class="f">Afflux 0.4 → y₁ = 2.4 m, q₁ = 4 → E₁ = 2.4 + 16/(19.62 × 5.76) = 2.542 m
+Narrowest width → throat just critical: E₂ = E₁ − Δz = 2.242 m = 1.5 y꜀ → y꜀ = 1.494 m
+q₂ = √(g y꜀³) = √(9.81 × 3.338) = 5.72 m²/s
+B₂,min = Q/q₂ = 20/5.72 = 3.50 m</div>
+<p>Reasoning to write: raising the bed lowers the energy available at the throat. Even at 4 m width, E₂ = 1.904 &lt; E<sub>min</sub> = 2.049, so the throat chokes and controls the upstream depth. For a choked throat, upstream E = E<sub>min,2</sub> + Δz; narrowing increases E<sub>min,2</sub> and hence the afflux. Setting the afflux limit gives the smallest width.</p>`},
+{t:"Q7d · Minimum model scale (6 marks)",h:`<div class="f">Froude similitude: Q_m = Q_p / N^(5/2) ≤ 0.060 m³/s
+N^(5/2) ≥ 20/0.06 = 333.3 → N ≥ 333.3^0.4 = 10.2
+Smallest admissible model: 1:10.2 (in practice 1:11 or smaller, e.g. 1:15, to leave pump margin)</div>
+<p>Add: check model Re (should be &gt; ~10⁵) and depths &gt; ~30–50 mm, so viscosity and surface tension don't distort the weir flow. Larger models (smaller N) are better, so you take the smallest N allowed.</p>`},
+{t:"Q8a · Max discharge in the concrete channel (8 marks)",h:`<div class="f">Section full to d₁ = 2 m: semicircle r = 1 m plus 1 m of vertical walls (2 m wide)
+A = π(1)²/2 + 2(1) = 3.571 m²     P = π(1) + 2(1) = 5.142 m
+R = 0.694 m     D_H = 4R = 2.778 m     k_s/D_H = 0.00144
+Fully rough guess: 1/√f = 2 log(2.778/0.004) + 1.14 = 6.82 → f = 0.0215
+V = √(2g D_H S₀ / f) = √(19.62 × 2.778 × 0.0005 / 0.0215) = 1.13 m/s
+Re = 1.13 × 2.778 / 10⁻⁶ = 3.1 × 10⁶ → Colebrook: f = 0.0216 (negligible change)
+Q = V A = 1.12 × 3.571 ≈ 4.0 m³/s</div><p>Assumptions: uniform flow so S<sub>f</sub> = S₀; wall roughness = bed roughness; water at 20 °C.</p>`},
+{t:"Q8b · Flood-plain depth for Q = 150 m³/s (12 marks)",h:`<div class="f">Divided-channel method: vertical interfaces at the channel banks, excluded from P.
+Main channel:   A = 3.571 + 2d₂, P = 5.142 (unchanged), k_s = 4 mm
+Left plain:     A = 20 d₂, P = 20 + d₂ (bed + outer wall), k_s = 50 mm
+Right plain:    A = 40 d₂, P = 40 + d₂, k_s = 50 mm
+Each: D_H = 4A/P, f from rough-turbulent formula, V = √(2gD_H S₀/f), Q = VA
+
+Try d₂ = 1.5: Q ≈ 10.8 + 36.8 + 75.3 = 123   (too low)
+Try d₂ = 1.8: Q ≈ 12.5 + 49.3 + 101.4 = 163  (too high)
+d₂ = 1.71 m:  main 11.9 (f 0.018, V 1.71) + left 45.2 (f 0.035, V 1.33) + right 92.9 (f 0.035, V 1.36) = 150 ✓</div>
+<p>Justify: uniform flow (same S<sub>f</sub> = S₀ in every sub-section), interfaces carry no shear (a simplification; real interfaces transfer momentum and slow the main channel), Re ~10⁶ so fully rough turbulent formula is fine, α = 1.</p>`},
+{t:"Q9 · Lysimeter (7 marks)",h:`<div class="f">a) A·ET = A·P − D − ΔS   (volumes)  or  ET = P − D − ΔS (depths over A = 3 m²; runoff = 0)
+b) ΔS = +6 kg / 1000 = 0.006 m³ = 2 mm     P = 24 mm = 0.072 m³     D = 0.006 m³ = 2 mm
+   ET = 24 − 2 − 2 = 20 mm in 48 h = 10 mm/day
+   Assumptions: no runoff/run-on, weight change is all water, ρ = 1000, uniform over the area
+c) Diagram: box "lysimeter soil + plants, ΔS = +0.006 m³"; in: rain 0.072 m³; out: ET 0.060 m³, drainage 0.006 m³</div>`},
+{t:"Q10 · Checking the single linear reservoir model (25 marks)",h:`
+${hydroPlot({t:[0,2,4,6,8,10,12],P:[0,360,270,180,180,90,0],Q:[0.63,43.4,114.2,156.9,184.8,199.3,191.0],Qmax:400,Qstep:50,Pmax:400,Pstep:100,xl:"Time (min)",yl:"Q (m³/s), corrected units",pl:"Effective intensity (mm/h)",peak:1})}
+<p class="cap">a) Hyetograph bars from the top (effective intensity; you can also show total rain) and outflow hydrograph. Here Q uses the corrected area conversion (×2.5); state which you plot.</p>
+<div class="f">b) Rain 16, 12, 8, 8, 4 mm: biggest burst first, decreasing → FRONT-loaded
+c) Effective/total = 12/16 = 9/12 = 6/8 = 3/4 = 0.75 → proportional loss = 25% (runoff coeff 0.75)
+d) Time coefficient k ≈ t꜀ = 20 min = 1200 s. Verify: in the 6→8 min step the input is constant (180):
+   (180 − 73.903)/(180 − 62.745) = 0.905 = (1 − Δt/2k)/(1 + Δt/2k) → Δt/k = 0.10 → k = 20 min ✓
+e) t꜀ = 5 min → k = 5 min: Δt/k = 0.4 with Δt = 2 min is too large (accuracy/stability); use Δt ≤ 0.5 min.
+   A faster store: outflow rises much faster, the peak is higher and earlier (q tracks i closely),
+   recession is quicker.
+f) Recalculate steps 1–2 with the exact solution for constant i over each step:
+   q(2) = 360 + (0.25 − 360)e^(−0.1) = 34.5 mm/h   (table 17.36)
+   q(4) = 270 + (34.5 − 270)e^(−0.1) = 56.9 mm/h   (table 45.68)
+   The table's scheme averages i at both ends of the step, so the first step only sees 180 mm/h:
+   the rising limb lags by about one time step and is underestimated by ~50% at 2 min.
+   Unit check: Q = q × A / 3.6×10⁶ = q × 9×10⁶/3.6×10⁶ = 2.5q
+   → Q(0) = 0.625 m³/s (table 0.063), Q(2) = 43.4 (table 4.339): the table is 10× too small
+     (90 ha used instead of 900 ha).
+   Recommendations: fix the area conversion; apply each interval's own intensity (exact solution
+   or MEM with the interval average); keep Δt ≤ k/10; check volume (Σ effective rain × A vs Σ Q Δt).</div>
+<div class="note">The examiner wrote "there may or may not be errors". The two to find are the ×10 area error and the delayed or underestimated first step. Show the arithmetic for both.</div>`},
+{t:"Q11 · Weibull design check and maintenance budget (8 marks)",h:`<div class="f">a) 1976, N = 13: 4,000 lies between rank 2 (4,380.9) and rank 3 (3,592.4); nearest = rank 2
+   AEP = r/(N+1) = 2/14 = 0.143 → 1 in 7 years
+   (interpolating between ranks: ≈ 0.177 → 1 in 5.6 yr)
+b) 2022, N = 59: between rank 6 (4,380.9) and rank 7 (3,676.3); nearest = rank 7
+   AEP = 7/60 = 0.117 → 1 in 8.6 years   (interpolated ≈ 1 in 9.2 yr)
+   The event is estimated to be slightly rarer. 13 years is a short record with large sampling
+   error; the 59-year record is more representative. Changes could also reflect non-stationarity
+   (land use, climate variability), which the method assumes away.
+c) AEP 0.2, budget for one inspection in 8 years → sufficient if ≤ 1 event in 8 years
+   P(0) = 0.8⁸ = 0.168;  P(1) = 8(0.2)(0.8)⁷ = 0.336  →  P(sufficient) = 0.50
+   Assumes events are independent between years, AEP constant</div>`}
+],
+X23:[
+{t:"MCQ 1–17 (50 marks)",h:`<div class="f">1 (C) 0.0099 m³/s   2 (D) 113.2 m³/s   3 (D) laminar is untrue   4 (E) 85 MN   5 (C) downstream
+6 (E) 74,088   7 (D) 134 Pa   8 (D) 1.69 m   9 (D) 1.31 m
+10 False   11 False   12 False   13 (d) 113.8 mm/h   14 (d) 294.3 m³/s   15 (b) 2.17 mm/h
+16 (d) 129.6 mm   17 (b) rank 5</div><p>Full working for each is in the MCQ drill (filter: 2023).</p>`},
+{t:"Q18 · Sluice sketch with control volume and forces (5 marks)",h:`${SVG_SLUICE}<ul><li>Upstream subcritical depth (0.200 m model / 32 m prototype), supercritical jet downstream (vena contracta ≈ 0.61 × opening).</li><li>Control volume between sections where streamlines are parallel to the bed (hydrostatic).</li><li>Forces on the CV: upstream hydrostatic thrust (→), downstream thrust (←), gate on water (←), weight and bed reaction. Friction neglected. Pressure on the gate face is less than hydrostatic because of converging streamlines.</li></ul>`},
+{t:"Q19 · Triangular canal: control, profile, sketches (18 marks)",h:`${SVG_TRI}
+<div class="f">b) y = 1.05 &lt; y꜀ = 1.69 → supercritical (Fr = 3.27) → controlled from UPSTREAM.
+   Disturbances can't travel upstream (V &gt; wave celerity √(gA/B)).
+c) yₙ = 1.31 &lt; y꜀ = 1.69 → steep slope; y = 1.05 &lt; yₙ → zone 3 → S3 profile.
+   Downstream, the water surface rises gradually towards normal depth.
+e) dy/dx = (S₀ − S_f)/(1 − Fr²): S_f = 0.027 &gt; S₀ → numerator −; Fr &gt; 1 → denominator −
+   → dy/dx &gt; 0: depth INCREASES downstream, tending asymptotically to yₙ = 1.31 m.
+   Friction exceeds gravity, so the flow decelerates and deepens.</div>${SVG_S3}`},
+{t:"Q20 · Lake water balance (3 marks)",h:`<div class="f">a) Box "lake, S₀ = 60 ML"; in: inflow 60 ML; out: consumption + evaporation 130 ML (predicted)
+b) S = 60 + 60 − 130 = −10 ML → physically impossible → S = 0 ML (lake empties)
+   Comment: only 120 ML is available, so actual losses ≤ 120 ML; a 10 ML shortfall in supply.
+   Losses really depend on storage (evaporation falls as area shrinks), so use a time-stepped
+   balance that clips S at zero.</div>`},
+{t:"Q21 · Checking the Muskingum routing (12 marks)",h:`
+${hydroPlot({t:[0,2,4,6,8,10,12],P:[0,0,0,0,0,0,0],Q:[0,100,200,200,0,0,0],Q2:[0,5.24,56.33,125.85,151.25,78.06,40.29],Qmax:300,Qstep:50,Pmax:1,Pstep:1,xl:"Elapsed time (h)",yl:"Discharge (m³/s)",pl:" "})}
+<p class="cap">a) Red: reservoir release (inflow). Green dashed: corrected outflow at the bridge. The table's own outflow (52, 174, 280, 231, 119, 62) peaks above the inflow, which is the giveaway.</p>
+<div class="f">b) K = L/c, c = 1.7 V = 1.7 m/s → K = 23,970/1.7 = 14,100 s = 235 min ✓
+   X = 0.2: typical natural channel (0–0.5) ✓  (catchment area 45.3 km² is irrelevant)
+   C₁ = (Δt − 2KX)/D = (120 − 94)/496 = 0.052 (table says 0.520 ✗), C₂ = 0.431 ✓, C₃ = 0.516 ✓
+   Table ΣC = 1.468 ≠ 1 → mass is created
+c) Inflow rises 0 → 200 m³/s in 4 h → Δt ≤ 240/6 = 40 min. Δt = 120 min is too coarse
+   (only 3 non-zero inflow points; the peak is poorly resolved). 2KX = 94 ≤ 120 ≤ 376 = 2K(1−X),
+   so the coefficients are at least non-negative.
+d) Table outflow peak 280 m³/s &gt; inflow peak 200 m³/s with no tributaries: impossible.
+   ΣQ ≈ 975 vs ΣI = 500 → volume roughly doubled. Corrected: peak ≈ 151 m³/s at 22:00
+   (attenuated and lagged, as expected).
+   Recommend: correct C₁; re-tabulate inflow at Δt ≈ 30 min; recompute K and X from channel
+   data (B, S₀, Manning V); check C₁+C₂+C₃ = 1 and inflow/outflow volumes match;
+   calibrate with observed bridge flows if available.</div>`},
+{t:"Q22 · Rainfall–runoff table (12 marks)",h:`
+${hydroPlot({t:[0,0.5,1,1.5,2,2.5,3,3.5],P:[0,13,21,8,0,0,0,0],Q:[1,1,1,10,47,30,1,1],qb:1,Qmax:50,Qstep:10,Pmax:25,Pstep:5,peak:1})}
+<div class="f">b) Direct runoff = Q − 1: 0, 0, 0, 9, 46, 29, 0, 0 → V = 84 × 1800 = 151,200 m³
+   Depth = 151,200 / 4.2×10⁶ = 0.036 m = 36 mm
+c) Rain = 13 + 21 + 8 = 42 mm → loss = 6 mm = 14.3%
+d) Middle-loaded: the largest burst (21 mm, 50% of the total) falls in the middle third
+e) % duration  0   33.3   66.7   100
+   % rainfall  0   31.0   81.0   100
+(the "30 h" in the table is a typo for 3.0 h; say so)</div>`}
+],
+X22:[
+{t:"Part A MCQ 1–16 (39 marks)",h:`<div class="f">1 F   2 F   3 F   4 F   5 T   6 (e) 0 ML   7 (b) 60 ML   8 (c) 0.66 mm/h   9 (d) 14.3 mm/h   10 (a) 1 in 50
+11 (a) 25.8 m²/s   12 (e) downstream   13 (b) 3.51 m   14 (d) downstream   15 (b) 0.67 m/s   16 (a) 1.22 m</div><p>Full working in the MCQ drill (filter: 2022). Q11–16 are one long specific-energy problem: do them as one question.</p>`},
+{t:"Q17 · Rainfall–runoff table (11 marks)",h:`
+${hydroPlot({t:[0,0.5,1,1.5,2,2.5,3],P:[0,5,15,7,0,0,0],Q:[2,2,20,45,30,2,2],qb:2,Qmax:50,Qstep:10,Pmax:20,Pstep:5,peak:1})}
+<div class="f">b) Direct = 0, 0, 18, 43, 28, 0, 0 → V = 89 × 1800 = 160,200 m³ → 160,200/10.01×10⁶ = 16.0 mm
+c) Rain 27 mm → loss 11.0 mm = 40.7%
+d) Middle-loaded: 15 of 27 mm (56%) in the middle third
+e) % duration 0 / 33.3 / 66.7 / 100      % rain 0 / 18.5 / 74.1 / 100</div>`},
+{t:"Q18 · Weibull design check (9 marks)",h:`<div class="f">a) N = 13, Q = 5,000: nearest observed 5,521.7 (rank 1) → AEP = 1/14 → 1 in 14 yr
+   (between ranks 1 and 2: interpolated ≈ 1 in 9.6 yr; say which you used)
+b) N = 59: nearest 4,654.4 (rank 5) → 5/60 → 1 in 12 yr → the design flood is now estimated to be
+   MORE frequent. The longer record contains several larger floods (1983, 1989, 1999, 2011);
+   13 years was too short to sample them, and the catchment/climate may have changed.
+c) Same as 2024 Q11c: P(≤1 event in 8 yr, AEP 0.2) = 0.168 + 0.336 = 0.50</div>`},
+{t:"Q19 · Reservoir storage–discharge and MEM equation (5 marks)",h:`<div class="f">a) h = S/(1.1A) → Q = C L (S / 1.1A)^(3/2)
+b) S(t+Δt) + (Δt/2) C L [S(t+Δt)/(1.1A)]^(3/2)
+      = S(t) + (Δt/2)[I(t) + I(t+Δt)] − (Δt/2) C L [S(t)/(1.1A)]^(3/2)
+   S storage above spillway (m³); I inflow (m³/s); Q outflow (m³/s); Δt time step (s);
+   C weir coefficient (−); L weir length (m); h head over crest (m); A surface area at FSL (m²)
+   Solve the LHS for S(t+Δt) by iteration each step.</div>`},
+{t:"Q20–22 · Stilling basin: sketch, force on baffles, energy (22 marks)",h:`${SVG_BASIN}
+<div class="f">q = 125/12 = 10.42 m²/s   d₁ = q/V₁ = 0.833 m   d₂ = q/V₂ = 6.944 m
+Momentum (F_b = blocks on water, + upstream):
+F_b = ½ρg(d₁² − d₂²) − ρq(V₂ − V₁)
+    = 4905(0.694 − 48.22) − 1000(10.42)(1.5 − 12.5)
+    = −233,139 + 114,583 = −118,556 N/m
+21a) |F| = 118.6 kN/m × 12 m = 1.42 MN on the baffle row
+21b) F_b negative → blocks push the water DOWNSTREAM → water pushes blocks UPSTREAM.
+     Check: a free jump from d₁ (Fr₁ = 4.37) would reach only 4.75 m; the tailwater (6.94 m)
+     is deeper, so its thrust exceeds the incoming momentum flux and the blocks hold the jump.
+22a) H₁ = 0.833 + 12.5²/19.62 = 8.797 m;  H₂ = 6.944 + 1.5²/19.62 = 7.059 m → ΔH = 1.74 m
+22b) P = ρgQΔH = 1000 × 9.81 × 125 × 1.74 = 2.13 MW</div>`},
+{t:"Q23 · 1:12 laboratory model (8 marks)",h:`<div class="f">Model width = 12/12 = 1 m → q_m = 0.06 m²/s, V₁ = 0.06/0.02 = 3.0 m/s, Fr₁ = 6.8
+a) Re = V D_H/ν, D_H = 4A/P = 4(1 × 0.02)/(1 + 0.04) = 0.077 m → Re ≈ 2.3 × 10⁵ (≈ 4q/ν = 2.4×10⁵)
+   Turbulent (&gt; 10⁵), so Froude-scaled results should transfer with small viscous scale effects.
+   Comment: d₁ = 20 mm is shallow (surface tension, aeration of the jump under-represented);
+   Q_p/N^2.5 = 125/498.8 = 0.25 m³/s, so 0.06 m³/s models a smaller event (≈ 30 m³/s prototype).
+b) Model ΔH = (0.02 + 3²/19.62) − (0.25 + 0.24²/19.62) = 0.479 − 0.253 = 0.226 m
+   Head scales with length: ΔH_p = 12 × 0.226 = 2.71 m</div>`},
+{t:"Q24 · Sketch of the contraction (6 marks)",h:`${SVG_CONTRA}<p>Show plan widths 22 → 18 → 25 m, bed steps, water levels from Q13–16 (81.30, 81.21, 81.30 m AHD), the horizontal energy line (no losses), subcritical everywhere (no critical section, so it is <b>not</b> acting as a weir), controlled from downstream.</p>`}
+]};
+function renderPapers(){const k=$("#pSel").value;$("#papers").innerHTML=PAPERS[k].map((p,i)=>`<details class="mod"${i===1?" open":""}><summary><span class="ttl"><h3>${p.t}</h3></span></summary><div class="body">${p.h}</div></details>`).join("")}
+$("#pSel").addEventListener("change",renderPapers);renderPapers();
+show(location.hash.slice(1));
+
+</script>
+</body></html>
